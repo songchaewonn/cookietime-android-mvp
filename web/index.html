@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#fffaf1" />
+  <meta name="description" content="쿠키 캐릭터와 함께 공강과 집중 시간을 챙기는 대학생 루틴 앱" />
+  <title>쿠키타임 · 나를 위한 집중 루틴</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="쿠키타임 홈"><span class="brand-mark">c</span><span>cookie<span class="brand-light">time</span></span></a>
+      <button class="icon-button" id="settings-shortcut" aria-label="설정 열기">☼</button>
+    </header>
+
+    <main id="app" aria-live="polite"></main>
+
+    <nav class="bottom-nav" aria-label="주요 메뉴">
+      <button data-page="home" class="nav-item active"><span>⌂</span><small>홈</small></button>
+      <button data-page="schedule" class="nav-item"><span>▦</span><small>시간표</small></button>
+      <button data-page="tasks" class="nav-item"><span>☑</span><small>할 일</small></button>
+      <button data-page="focus" class="nav-item"><span>◷</span><small>집중</small></button>
+    </nav>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <div id="modal-root"></div>
+  <script src="app.js"></script>
+</body>
+</html>
