@@ -23,6 +23,8 @@ public class NativeBridge {
 
     @JavascriptInterface public boolean hasUsageAccess() { return activity.hasUsageAccess(); }
     @JavascriptInterface public boolean hasOverlayPermission() { return Build.VERSION.SDK_INT < 23 || Settings.canDrawOverlays(context); }
+    @JavascriptInterface public boolean hasNotificationPermission() { return Build.VERSION.SDK_INT < 33 || activity.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED; }
+    @JavascriptInterface public boolean hasExactAlarmPermission() { if(Build.VERSION.SDK_INT < 31) return true; android.app.AlarmManager alarm=(android.app.AlarmManager)context.getSystemService(Context.ALARM_SERVICE); return alarm != null && alarm.canScheduleExactAlarms(); }
     @JavascriptInterface public void requestPermission(String kind) { activity.runOnUiThread(() -> activity.requestPermission(kind)); }
     @JavascriptInterface public boolean startMonitoring() { boolean permitted=activity.hasUsageAccess() && hasOverlayPermission(); activity.runOnUiThread(activity::startMonitor); return permitted; }
     @JavascriptInterface public void stopMonitoring() { activity.runOnUiThread(activity::stopMonitor); }
@@ -33,9 +35,10 @@ public class NativeBridge {
         else vibrator.vibrate(milliseconds);
     }
     @JavascriptInterface public void countdown(String title, int minutes, String taskId, int snoozes) { NativeNotifications.showCountdown(context,title,minutes,taskId,snoozes,"start"); }
-    @JavascriptInterface public void syncState(String tasksJson, String blockedJson, String settingsJson) {
+    @JavascriptInterface public void syncState(String tasksJson, String blockedJson, String settingsJson, boolean focusActive) {
         android.content.SharedPreferences prefs=context.getSharedPreferences("cookie-native", Context.MODE_PRIVATE);
         String normalized=normalizeBlocked(blockedJson);
+        boolean wasMonitoring=prefs.getBoolean("monitor-desired",false);
         try {
             JSONObject settings=new JSONObject(settingsJson); JSONArray thresholds=settings.optJSONArray("vibrationThresholds");
             String thresholdText=thresholds==null?"[5,10,20]":thresholds.toString();
@@ -43,7 +46,15 @@ public class NativeBridge {
                     .putBoolean("vibration-enabled",settings.optBoolean("vibration",true))
                     .putString("vibration-thresholds",thresholdText)
                     .putInt("vibration-intensity",settings.optInt("vibrationIntensity",1))
-                    .putString("vibration-dnd",settings.optString("vibrationDnd","respect")).apply();
+                    .putString("vibration-dnd",settings.optString("vibrationDnd","respect"))
+                    .putString("blocked-mode",settings.optString("blockedMode","focus"))
+                    .putString("blocked-days",settings.optJSONArray("blockedDays")==null?"[1,2,3,4,5]":settings.optJSONArray("blockedDays").toString())
+                    .putString("blocked-start",settings.optString("blockedStart","09:00"))
+                    .putString("blocked-end",settings.optString("blockedEnd","18:00")).apply();
+            String mode=settings.optString("blockedMode","focus");
+            boolean shouldMonitor=focusActive || !"focus".equals(mode);
+            prefs.edit().putBoolean("monitor-desired",shouldMonitor).apply();
+            if(shouldMonitor!=wasMonitoring) activity.runOnUiThread(shouldMonitor?activity::startMonitor:activity::stopMonitor);
         } catch(Exception ignored) { }
         TaskAlarmScheduler.sync(context,tasksJson,settingsJson);
     }

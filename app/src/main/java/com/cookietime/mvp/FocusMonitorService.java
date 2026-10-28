@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Calendar;
 
 public class FocusMonitorService extends Service {
     public static final String ACTION_START="com.cookietime.mvp.START_MONITOR";
@@ -52,11 +53,24 @@ public class FocusMonitorService extends Service {
         PowerManager power=(PowerManager)getSystemService(POWER_SERVICE);
         if(power!=null && !power.isInteractive()){ closeDeviation(); return; }
         String latest=readLatestForeground(); if(!latest.isEmpty()) foreground=latest;
-        boolean blocked=blockedPackages().contains(foreground) && !foreground.equals(getPackageName());
+        boolean blocked=blockedPackages().contains(foreground) && !foreground.equals(getPackageName()) && isRestrictionActive();
         if(blocked){
             if(!foreground.equals(activeBlocked)){ closeDeviation(); activeBlocked=foreground; deviationStart=System.currentTimeMillis(); vibrationStage=0; }
             showOverlay(); updateElapsed(); checkVibration();
         }else if(!activeBlocked.isEmpty()) closeDeviation();
+    }
+    private boolean isRestrictionActive(){
+        android.content.SharedPreferences prefs=getSharedPreferences("cookie-native",MODE_PRIVATE);
+        String mode=prefs.getString("blocked-mode","focus");
+        if("always".equals(mode)) return true;
+        if(!"schedule".equals(mode)) return true; // Service runs only while a focus session is active in this mode.
+        Calendar now=Calendar.getInstance(); int day=now.get(Calendar.DAY_OF_WEEK)-1;
+        try { JSONArray days=new JSONArray(prefs.getString("blocked-days","[1,2,3,4,5]")); boolean selected=false; for(int i=0;i<days.length();i++) if(days.optInt(i,-1)==day){selected=true;break;} if(!selected)return false; }
+        catch(Exception ignored){ return false; }
+        String start=prefs.getString("blocked-start","09:00"), end=prefs.getString("blocked-end","18:00");
+        java.text.SimpleDateFormat format=new java.text.SimpleDateFormat("HH:mm",java.util.Locale.ROOT);
+        String current=format.format(now.getTime());
+        return start.equals(end) || (start.compareTo(end)<0 ? current.compareTo(start)>=0 && current.compareTo(end)<0 : current.compareTo(start)>=0 || current.compareTo(end)<0);
     }
     private String readLatestForeground(){
         try{
