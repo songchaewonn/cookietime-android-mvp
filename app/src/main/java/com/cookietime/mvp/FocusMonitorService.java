@@ -90,7 +90,7 @@ public class FocusMonitorService extends Service {
         if(deviationStart==0 || !prefs.getBoolean("vibration-enabled",true))return;
         if("respect".equals(prefs.getString("vibration-dnd","respect"))) {
             try { NotificationManager notifications=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);if(notifications!=null && notifications.getCurrentInterruptionFilter()!=NotificationManager.INTERRUPTION_FILTER_ALL)return; }
-            catch(SecurityException noPolicyAccess) { return; }
+            catch(SecurityException noPolicyAccess) { /* Let the device apply its own vibration policy. */ }
         }
         long mins=(System.currentTimeMillis()-deviationStart)/60000; int[] thresholds={5,10,20};
         try{org.json.JSONArray configured=new org.json.JSONArray(prefs.getString("vibration-thresholds","[5,10,20]"));for(int i=0;i<Math.min(3,configured.length());i++)thresholds[i]=configured.optInt(i,thresholds[i]);}catch(Exception ignored){}
