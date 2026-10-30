@@ -4,7 +4,7 @@ val webRoot = rootProject.projectDir.resolve("web")
 val generatedWeb = layout.buildDirectory.dir("generated/webAssets")
 val syncWebAssets = tasks.register<Sync>("syncWebAssets") {
     from(webRoot) {
-        include("index.html", "app.js", "styles.css", "public/assets/**")
+        include("index.html", "app.js", "auth.js", "auth-config.js", "styles.css", "public/assets/**")
     }
     into(generatedWeb.map { it.dir("www") })
 }

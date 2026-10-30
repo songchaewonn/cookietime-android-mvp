@@ -2,6 +2,8 @@
 
 웹 화면을 WebView로 실행하고 Android 전용 동작은 JavaScript bridge와 네이티브 서비스에 연결한 독립 Android 프로젝트입니다. 웹 화면 원본은 이 저장소의 `web/` 폴더에 포함되어 있어 이 프로젝트만으로 빌드할 수 있습니다. 웹 저장소에서 화면을 바꾸면 동일 파일을 `web/`에도 반영해 주세요.
 
+시간표 화면에는 길이별 공강 추천이 포함되어 있으며, 수락하면 기존 과제 시작 알림에 예약됩니다. 게스트 사용은 바로 가능하고, Android APK의 Google 로그인 버튼은 네이티브 인증 연동이 끝날 때까지 비활성화됩니다. 브라우저 웹 버전 Google 로그인은 웹 저장소의 `auth-config.js`에 Firebase 웹 설정을 넣고, Firebase Authentication의 Google 제공업체 및 승인 도메인을 설정해야 동작합니다.
+
 ## Android Studio에서 열기
 
 1. Android Studio를 설치하고 저장소 루트(이 폴더)를 프로젝트로 엽니다.
