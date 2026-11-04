@@ -1,0 +1,44 @@
+name: Build and publish Android APK
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build installable debug APK
+        run: gradle --no-daemon assembleDebug
+
+      - name: Publish APK to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/CookieTime-${TAG_NAME}.apk"
+          gh release create "$TAG_NAME" "$RUNNER_TEMP/CookieTime-${TAG_NAME}.apk" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "CookieTime ${TAG_NAME}" \
+            --notes "CookieTime Android MVP install build. This debug-signed APK is for MVP demonstration and direct testing."
