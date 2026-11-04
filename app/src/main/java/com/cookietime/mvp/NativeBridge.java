@@ -35,7 +35,7 @@ public class NativeBridge {
         else vibrator.vibrate(milliseconds);
     }
     @JavascriptInterface public void countdown(String title, int minutes, String taskId, int snoozes) { NativeNotifications.showCountdown(context,title,minutes,taskId,snoozes,"start"); }
-    @JavascriptInterface public void syncState(String tasksJson, String blockedJson, String settingsJson, boolean focusActive) {
+    @JavascriptInterface public void syncState(String tasksJson, String classesJson, String blockedJson, String settingsJson, boolean focusActive) {
         android.content.SharedPreferences prefs=context.getSharedPreferences("cookie-native", Context.MODE_PRIVATE);
         String normalized=normalizeBlocked(blockedJson);
         boolean wasMonitoring=prefs.getBoolean("monitor-desired",false);
@@ -50,13 +50,17 @@ public class NativeBridge {
                     .putString("blocked-mode",settings.optString("blockedMode","focus"))
                     .putString("blocked-days",settings.optJSONArray("blockedDays")==null?"[1,2,3,4,5]":settings.optJSONArray("blockedDays").toString())
                     .putString("blocked-start",settings.optString("blockedStart","09:00"))
-                    .putString("blocked-end",settings.optString("blockedEnd","18:00")).apply();
+                    .putString("blocked-end",settings.optString("blockedEnd","18:00"))
+                    .putBoolean("character-enabled",settings.optBoolean("character",true))
+                    .putInt("bubble-frequency",settings.optInt("bubbleIntervalMinutes",15))
+                    .putInt("usage-default-minutes",settings.optInt("usageDefaultMinutes",15))
+                    .putBoolean("class-end-reminders",settings.optBoolean("classEndReminders",true)).apply();
             String mode=settings.optString("blockedMode","focus");
             boolean shouldMonitor=focusActive || !"focus".equals(mode);
             prefs.edit().putBoolean("monitor-desired",shouldMonitor).apply();
             if(shouldMonitor!=wasMonitoring) activity.runOnUiThread(shouldMonitor?activity::startMonitor:activity::stopMonitor);
         } catch(Exception ignored) { }
-        TaskAlarmScheduler.sync(context,tasksJson,settingsJson);
+        TaskAlarmScheduler.sync(context,tasksJson,classesJson,settingsJson);
     }
     @JavascriptInterface public int getDeviationCount() {
         try{return new JSONArray(context.getSharedPreferences("cookie-native",Context.MODE_PRIVATE).getString("deviation-logs","[]")).length();}catch(Exception e){return 0;}

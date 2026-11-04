@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
         settings.setAllowContentAccess(true);
         settings.setSupportZoom(false);
         webView.setWebViewClient(new WebViewClient(){
-            @Override public void onPageFinished(WebView view,String url){ super.onPageFinished(view,url); dispatchStartFocus(); }
+            @Override public void onPageFinished(WebView view,String url){ super.onPageFinished(view,url); dispatchStartFocus(); dispatchExternalActions(); }
         });
         webView.setWebChromeClient(new WebChromeClient());
         webView.addJavascriptInterface(new NativeBridge(this, webView), "NativeMvp");
@@ -48,7 +48,9 @@ public class MainActivity extends Activity {
         if (webView != null) webView.postDelayed(() -> webView.evaluateJavascript("window.refreshNativeSettings && window.refreshNativeSettings()", null), 350);
     }
 
-    @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); if(webView!=null) webView.postDelayed(this::dispatchStartFocus,350); }
+    @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); if(webView!=null) webView.postDelayed(()->{dispatchStartFocus();dispatchExternalActions();},350); }
+
+    private void dispatchExternalActions(){ if(webView==null)return; Intent intent=getIntent(); if(intent==null)return; if(intent.getBooleanExtra("open_missions",false)){intent.removeExtra("open_missions");webView.evaluateJavascript("window.openMissionFromOverlay && window.openMissionFromOverlay()",null);} String title=intent.getStringExtra("class_end_title");if(title!=null){intent.removeExtra("class_end_title");String safe=org.json.JSONObject.quote(title);webView.evaluateJavascript("window.openClassEndFromNotification && window.openClassEndFromNotification("+safe+")",null);} }
 
     private void dispatchStartFocus(){
         Intent intent=getIntent();

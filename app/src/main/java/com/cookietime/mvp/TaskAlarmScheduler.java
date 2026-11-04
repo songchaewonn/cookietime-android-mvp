@@ -15,10 +15,10 @@ import java.util.Set;
 
 final class TaskAlarmScheduler {
     private TaskAlarmScheduler() {}
-    static void sync(Context context, String tasksJson, String settingsJson) {
+    static void sync(Context context, String tasksJson, String classesJson, String settingsJson) {
         try {
             android.content.SharedPreferences prefs=context.getSharedPreferences("cookie-native",Context.MODE_PRIVATE);
-            String signature=tasksJson+"|"+settingsJson;
+            String signature=tasksJson+"|"+classesJson+"|"+settingsJson;
             if(signature.equals(prefs.getString("alarm-signature",""))) return;
             AlarmManager alarm=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
             Set<String> previous=prefs.getStringSet("alarm-ids",new HashSet<>());
@@ -42,6 +42,21 @@ final class TaskAlarmScheduler {
                     long dueAt=LocalDateTime.parse(due).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                     if(reminder24) schedule(context,alarm,next,taskId,title,"deadline",1440,dueAt-24*60*60_000L,0,now);
                     if(reminder3) schedule(context,alarm,next,taskId,title,"deadline",180,dueAt-3*60*60_000L,0,now);
+                }
+            }
+            if(settings.optBoolean("classEndReminders",true)) {
+                JSONArray classes=new JSONArray(classesJson);
+                java.time.LocalDate today=java.time.LocalDate.now();
+                for(int i=0;i<classes.length();i++) {
+                    JSONObject cls=classes.getJSONObject(i); int weekday=cls.optInt("day",0);
+                    boolean followedByAnother=false; for(int j=0;j<classes.length();j++){JSONObject candidate=classes.getJSONObject(j);if(j!=i&&candidate.optInt("day",-1)==weekday&&candidate.optString("start","").equals(cls.optString("end",""))){followedByAnother=true;break;}} if(followedByAnother) continue;
+                    java.time.LocalDate classDate=today.with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.of(weekday==0?7:weekday)));
+                    for(int repeat=0;repeat<2;repeat++,classDate=classDate.plusWeeks(1)) {
+                        String end=cls.optString("end",""); if(end.isEmpty()) continue;
+                        long at=LocalDateTime.parse(classDate+"T"+end).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                        if(at<=now) continue;
+                        schedule(context,alarm,next,cls.optString("id",cls.optString("title","class"))+"-"+classDate,cls.optString("title","수업"),"classEnd",0,at,0,now);
+                    }
                 }
             }
             prefs.edit().putStringSet("alarm-ids",next).putString("alarm-signature",signature).apply();

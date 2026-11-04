@@ -33,11 +33,13 @@ final class NativeNotifications {
         if (Build.VERSION.SDK_INT >= 33 && context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
         NotificationManager manager=(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         boolean startNotice="start".equals(kind);
-        String message=startNotice?(minutes==0?title+" 시작할 시간이에요!":minutes+"분 뒤 시작해요 · "+title):(minutes==1440?"하루 뒤 마감이에요 · ":"3시간 뒤 마감이에요 · ")+title;
+        boolean classEnd="classEnd".equals(kind);
+        String message=classEnd?("수업이 끝났어요 · "+title+"\n할 일을 빠르게 기록해보세요."):startNotice?(minutes==0?title+" 시작할 시간이에요!":minutes+"분 뒤 시작해요 · "+title):(minutes==1440?"하루 뒤 마감이에요 · ":"3시간 뒤 마감이에요 · ")+title;
         Notification.Builder builder=new Notification.Builder(context, CHANNEL)
                 .setSmallIcon(android.R.drawable.ic_popup_reminder)
-                .setContentTitle(startNotice?"쿠키타임 시작 예고":"쿠키타임 마감 알림")
+                .setContentTitle(classEnd?"수업 종료 알림":startNotice?"쿠키타임 시작 예고":"쿠키타임 마감 알림")
                 .setContentText(message).setAutoCancel(true);
+        if(classEnd){Intent open=new Intent(context,MainActivity.class).putExtra("class_end_title",title).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);PendingIntent pending=PendingIntent.getActivity(context,(title+":class-end").hashCode(),open,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);builder.setContentIntent(pending);}
         if(startNotice && minutes==0) {
             Intent open=new Intent(context,MainActivity.class).putExtra("start_focus",true).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent start=PendingIntent.getActivity(context,(taskId+":start").hashCode(),open,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
