@@ -18,3 +18,5 @@
 .gem.yellow{background:#fff2bc;color:#d5a519}
 
 .cookie-gap-bonus{margin:10px 0;color:#a58064;font-size:12px}.cookie-gap-bonus.active{padding:10px 12px;border-radius:12px;background:#fff0dc;color:#b7662f;font-weight:700}.cookie-share-button{width:100%;margin-top:14px}
+
+.game-feedback{min-height:18px;margin:3px 0 8px;text-align:center;color:#c8774e;font-size:12px}
