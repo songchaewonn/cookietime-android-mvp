@@ -16,3 +16,5 @@
 .cookie-reward-card{margin-top:14px}.cookie-reward-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}.cookie-reward-heading strong{font:16px var(--display)}.cookie-reward-heading span{font-size:12px;color:#d78351}.cookie-reward-stats .stat strong{font-size:16px}.cookie-reward-history{display:grid;gap:5px;margin-top:10px;color:#927c69;font-size:11px}.cookie-reward-empty{margin:9px 0 0;color:var(--muted);font-size:12px}
 
 .gem.yellow{background:#fff2bc;color:#d5a519}
+
+.cookie-gap-bonus{margin:10px 0;color:#a58064;font-size:12px}.cookie-gap-bonus.active{padding:10px 12px;border-radius:12px;background:#fff0dc;color:#b7662f;font-weight:700}.cookie-share-button{width:100%;margin-top:14px}
