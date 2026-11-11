@@ -116,3 +116,6 @@
 .chagok-home .oven-cookie img{animation:home-cookie-bounce 1.45s cubic-bezier(.36,.07,.19,.97) infinite;transform-origin:50% 90%;will-change:transform}
 @keyframes home-cookie-bounce{0%,100%{transform:translateY(0) rotate(-2deg)}35%{transform:translateY(-11px) rotate(1deg)}52%{transform:translateY(1px) rotate(0)}68%{transform:translateY(-4px) rotate(-1deg)}}
 @media(prefers-reduced-motion:reduce){.chagok-home .oven-cookie img{animation:none}}
+.complete-display{position:relative;display:flex;align-items:center;justify-content:center;padding:0 20% 0 6%}
+.complete-display>strong{font:inherit;color:inherit;line-height:1;font-variant-numeric:tabular-nums}
+.complete-check{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:clamp(32px,9vw,48px);height:clamp(32px,9vw,48px);display:grid;place-items:center;border-radius:50%;background:#624a3b;color:#fff8ed;font:700 clamp(18px,5vw,26px)/1 var(--font)}
