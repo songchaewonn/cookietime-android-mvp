@@ -7,6 +7,7 @@ const COOKIE_BAKE_SECONDS = 25 * 60;
 let cookieBakeWatch = null;
 let cookieUiTick = null;
 let bakeCyclesSeen = Math.floor((Number(state.focus.sessionSeconds)||0)/COOKIE_BAKE_SECONDS);
+let designLastPage=page;
 
 function designOnboardingPage(){
   return `<section class="permission-onboarding"><button class="design-back" data-onboarding="skip" aria-label="뒤로">‹</button><h1>원활한 서비스 제공을 위해<br/>다음 권한이 필요해요</h1><div class="permission-list">
@@ -68,6 +69,7 @@ async function shareCookieTower(){
 }
 
 function designRender(){
+  if(page!==designLastPage){designLastPage=page;window.scrollTo(0,0)}
   if(page==='focusDone'){
     const root=document.querySelector('#app');root.innerHTML=focusCompletePage();bindCommon();
     root.querySelector('[data-unload-cookie]')?.addEventListener('click',()=>{showToast('25분 집중을 기록했어요. 쿠키 보상은 1시간 집중 시 쌓여요.');page='stats';render()});
@@ -86,6 +88,7 @@ function designRender(){
     root.querySelector('[data-toggle-timeline]')?.addEventListener('click',()=>root.querySelector('.schedule-timeline-wrap')?.classList.toggle('expanded'));
   }
   if(page==='stats')root.querySelector('.tower-page')?.classList.toggle('space-tower',state.cookieRewards.loose+state.cookieRewards.boxes*10>=60);
+  if(page==='stats'&&root.firstElementChild?.classList.contains('notice'))root.firstElementChild.remove();
   if(page==='settings'){
     const name=authUser?.displayName||'김쿠키';
     const profile=document.createElement('section');profile.className='my-profile-card';profile.innerHTML=`<span>🍪</span><div><strong>${esc(name)}</strong><small>${esc(state.settings.major||'전공을 설정해 주세요')}</small></div><button data-profile-edit>편집</button>`;root.prepend(profile);
