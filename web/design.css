@@ -70,3 +70,11 @@
 .schedule-day-content .recommend-card{margin:-5px 0 0 76px;padding:16px 17px;border-radius:20px}
 .schedule-day-content .recommend-card p{font-size:13px}
 .schedule-day-content .week-empty{margin-top:12px}@media(max-width:380px){.schedule-day-content .schedule-row{grid-template-columns:45px minmax(0,1fr);gap:9px}.schedule-day-content .free-slot{margin-left:54px}.schedule-day-content .recommend-card{margin-left:63px}}
+
+/* Align the visible logo artwork with the schedule heading despite transparent image padding. */
+.brand-logo{transform:translateX(-22px)}
+
+/* Apply the Figma tower sky palette while keeping the existing layered mountain and cookie artwork. */
+.tower-sky{background:radial-gradient(ellipse 58px 23px at 79% 37%,#fff 98%,transparent 100%),radial-gradient(ellipse 49px 19px at 19% 55%,#fff 98%,transparent 100%),linear-gradient(180deg,#fff 0%,#dbeffc 100%)}
+.chagok-home .oven-cookie img{will-change:transform}
+@media(prefers-reduced-motion:reduce){.chagok-home .oven-cookie img{animation:none}}
