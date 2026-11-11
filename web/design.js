@@ -19,13 +19,11 @@ function designOnboardingPage(){
 }
 
 function designHomePage(){
-  const list=sortedTasks().filter(t=>!t.done).slice(0,2),cls=todayClasses();
-  const nextClass=cls[0];
+  const list=sortedTasks().filter(t=>!t.done).slice(0,2);
   return `<div class="chagok-home"><div class="home-date">${today.getMonth()+1}월 ${today.getDate()}일 · ${weekdays[today.getDay()]}요일</div><h1>오늘도 가볍게 시작해요</h1><p class="home-subtitle">작은 시작이 하루의 리듬을 바꿔요.</p>
   <section class="oven-home"><div class="oven-slot"></div><div class="oven-cookie"><img src="public/assets/chagok-mascot.png" alt="차곡 쿠키 캐릭터"/></div><div class="oven-gauge" aria-label="25분 타이머"><span class="oven-dial"><i></i><b></b></span></div><button class="oven-bake" data-go="focus">굽기　▶</button></section>
   <h2>빠른 메뉴</h2><div class="chagok-quick"><button data-go="tasks"><span class="quick-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h11v4H8v12h12v-8"/><path d="m14 17 7-7-3-3-7 7-1 4z"/></svg></span><strong>메모 추가하기</strong><small>중요한 메모를 남기세요.</small></button><button data-go="game"><span>✦</span><strong>집중 게임하기</strong><small>잠깐 휴식을 취해보세요.</small></button><button data-go="stats"><span>▤</span><strong>오늘의 기록 보기</strong><small>오늘의 기록을 확인하세요.</small></button><button data-go="focus"><span>◷</span><strong>집중시간 설정하기</strong><small>집중 시간을 정해보세요.</small></button></div>
-  <div class="chagok-section-title"><h2>오늘의 할 일</h2><button class="text-link" data-go="tasks">모두 보기 ›</button></div>${list.length?`<div class="chagok-task-list">${list.map(t=>`<div class="chagok-task"><button class="check" data-done="${t.id}"></button><strong>${esc(t.title)}</strong><small>${remain(t.due)}</small></div>`).join('')}</div>`:'<div class="chagok-task-list empty">오늘의 할 일을 모두 마쳤어요 🍪</div>'}
-  <button class="today-schedule-card" data-go="schedule"><span>◷</span><div><strong>오늘의 일정 예약</strong><small>오늘 수업 ${cls.length}개${nextClass?` · 다음 ${esc(nextClass.start)} ${esc(nextClass.title)}`:' · 등록된 수업이 없어요'}</small></div><b>›</b></button></div>`
+  <div class="chagok-section-title"><h2>오늘의 할 일</h2><button class="text-link" data-go="tasks">모두 보기 ›</button></div>${list.length?`<div class="chagok-task-list">${list.map(t=>`<div class="chagok-task"><button class="check" data-done="${t.id}"></button><strong>${esc(t.title)}</strong><small>${remain(t.due)}</small></div>`).join('')}</div>`:'<div class="chagok-task-list empty">오늘의 할 일을 모두 마쳤어요 🍪</div>'}</div>`
 }
 
 function designSchedulePage(){
@@ -37,11 +35,11 @@ function designSchedulePage(){
     cells.push(`<button class="month-day ${d.toDateString()===new Date().toDateString()?'today':''} ${chosen?'selected':''}" data-month-day="${n}" data-day="${d.getDay()}">${n}${has?'<i></i>':''}</button>`)
   }
   const chosenDate=new Date(year,month,selectedDayDate()),day=chosenDate.getDay(),classes=state.classes.filter(c=>c.day===day).sort((a,b)=>a.start.localeCompare(b.start));
-  const overview=`<div class="chagok-month-head"><h1>${year}년 ${month+1}월</h1><button data-month-shift="-1">‹</button><button data-month-shift="1">›</button><button class="month-add" data-modal="class">＋</button></div><section class="month-calendar"><div class="month-week">${weekdays.map((w,i)=>`<b class="${i===0?'sunday':''}">${w}</b>`).join('')}</div><div class="month-days">${cells.join('')}</div></section><button class="today-schedule-card" data-toggle-timeline><span>◷</span><div><strong>${month+1}월 ${selectedDayDate()}일의 일정</strong><small>오늘 수업 ${classes.length}개 · 공강과 집중 시간을 확인하세요</small></div><b>›</b></button>`;
+  const overview=`<div class="chagok-month-head"><h1>${year}년 ${month+1}월</h1><button data-month-shift="-1" aria-label="이전 달">‹</button><button data-month-shift="1" aria-label="다음 달">›</button><button class="month-add" data-modal="class" aria-label="수업 추가">＋</button></div><section class="month-calendar"><div class="month-week">${weekdays.map((w,i)=>`<b class="${i===0?'sunday':''}">${w}</b>`).join('')}</div><div class="month-days">${cells.join('')}</div></section><button class="today-schedule-card" data-toggle-timeline><span>◷</span><div><strong>${month+1}월 ${selectedDayDate()}일의 일정</strong><small>수업 ${classes.length}개 · 일정과 공강 시간 보기</small></div><b>›</b></button>`;
   return `${overview}<section class="schedule-timeline-wrap"><div class="section-head"><h2>${month+1}월 ${selectedDayDate()}일 ${dayLabel(day)}</h2><button class="button secondary" data-modal="class">＋ 수업 추가</button></div>${originalSchedulePage()}</section>`;
 }
 function selectedDayDate(){return window.chagokSelectedDate||today.getDate()}
-function selectDesignDate(year,month,day){const chosen=new Date(year,month,day),base=new Date(today.getFullYear(),today.getMonth(),today.getDate());base.setDate(base.getDate()-base.getDay());const chosenWeek=new Date(chosen.getFullYear(),chosen.getMonth(),chosen.getDate());chosenWeek.setDate(chosenWeek.getDate()-chosenWeek.getDay());window.chagokSelectedDate=day;selectedDay=chosen.getDay();weekOffset=Math.round((chosenWeek-base)/604800000)}
+function selectDesignDate(year,month,day){const chosen=new Date(year,month,day),base=new Date(today.getFullYear(),today.getMonth(),today.getDate());base.setDate(base.getDate()-base.getDay());const chosenWeek=new Date(chosen.getFullYear(),chosen.getMonth(),chosen.getDate());chosenWeek.setDate(chosenWeek.getDate()-chosenWeek.getDay());window.chagokSelectedDate=day;window.chagokMonthAnchorDay=day;selectedDay=chosen.getDay();weekOffset=Math.round((chosenWeek-base)/604800000)}
 
 function designFocusPage(){
   const f=state.focus,elapsed=Math.max(0,Number(f.sessionSeconds)||0),remaining=COOKIE_BAKE_SECONDS-(elapsed%COOKIE_BAKE_SECONDS),total=Math.max(0,Number(f.seconds)||0),rest=liveRestSeconds(),clock=value=>`${String(Math.floor(value/60)).padStart(2,'0')}:${String(value%60).padStart(2,'0')}`;
@@ -86,8 +84,8 @@ function designRender(){
     if(state.focus.active&&!state.focus.deviation&&!cookieBakeWatch){cookieBakeWatch=setInterval(()=>{const current=Math.floor((Number(state.focus.sessionSeconds)||0)/COOKIE_BAKE_SECONDS);if(state.focus.active&&!state.focus.deviation&&current>bakeCyclesSeen){bakeCyclesSeen=current;page='focusDone';render()}},400)}
   }
   if(page==='schedule'){
-    root.querySelectorAll('[data-month-day]').forEach(button=>button.addEventListener('click',()=>{selectDesignDate(year,month,Number(button.dataset.monthDay));render()}));
-    root.querySelectorAll('[data-month-shift]').forEach(button=>button.addEventListener('click',()=>{const next=new Date(year,month+Number(button.dataset.monthShift),Math.min(selectedDayDate(),new Date(year,month+Number(button.dataset.monthShift)+1,0).getDate()));window.chagokMonthOffset=(window.chagokMonthOffset||0)+Number(button.dataset.monthShift);selectDesignDate(next.getFullYear(),next.getMonth(),next.getDate());render()}));
+    root.querySelectorAll('[data-month-day]').forEach(button=>button.addEventListener('click',()=>{const visible=new Date(today.getFullYear(),today.getMonth()+(Number(window.chagokMonthOffset)||0),Number(button.dataset.monthDay));selectDesignDate(visible.getFullYear(),visible.getMonth(),visible.getDate());render()}));
+    root.querySelectorAll('[data-month-shift]').forEach(button=>button.addEventListener('click',()=>{const offset=(Number(window.chagokMonthOffset)||0)+Number(button.dataset.monthShift),target=new Date(today.getFullYear(),today.getMonth()+offset,1),anchor=Number(window.chagokMonthAnchorDay)||selectedDayDate(),lastDay=new Date(target.getFullYear(),target.getMonth()+1,0).getDate();window.chagokMonthOffset=offset;window.chagokMonthAnchorDay=anchor;selectDesignDate(target.getFullYear(),target.getMonth(),Math.min(anchor,lastDay));window.chagokMonthAnchorDay=anchor;render()}));
     root.querySelector('[data-toggle-timeline]')?.addEventListener('click',()=>root.querySelector('.schedule-timeline-wrap')?.classList.toggle('expanded'));
   }
   if(page==='stats')root.querySelector('.tower-page')?.classList.toggle('space-tower',state.cookieRewards.loose+state.cookieRewards.boxes*10>=60);
