@@ -3,10 +3,7 @@ const originalSchedulePage = schedulePage;
 const originalStatsPage = statsPage;
 const originalRender = render;
 const originalFocusAction = focusAction;
-const COOKIE_BAKE_SECONDS = 25 * 60;
-let cookieBakeWatch = null;
 let cookieUiTick = null;
-let bakeCyclesSeen = Math.floor((Number(state.focus.sessionSeconds)||0)/COOKIE_BAKE_SECONDS);
 let designLastPage=page;
 
 function designOnboardingPage(){
@@ -21,7 +18,7 @@ function designOnboardingPage(){
 function designHomePage(){
   const list=sortedTasks().filter(t=>!t.done).slice(0,2);
   return `<div class="chagok-home"><div class="home-date">${today.getMonth()+1}월 ${today.getDate()}일 · ${weekdays[today.getDay()]}요일</div><h1>오늘도 가볍게 시작해요</h1><p class="home-subtitle">작은 시작이 하루의 리듬을 바꿔요.</p>
-  <section class="oven-home"><div class="oven-slot"></div><div class="oven-cookie"><img src="public/assets/chagok-mascot.png" alt="차곡 쿠키 캐릭터"/></div><div class="oven-gauge" aria-label="25분 타이머"><span class="oven-dial"><i></i><b></b></span></div><button class="oven-bake" data-go="focus">굽기　▶</button></section>
+  <section class="oven-home"><div class="oven-slot"></div><div class="oven-cookie"><img src="public/assets/chagok-mascot.png" alt="차곡 쿠키 캐릭터"/></div><div class="oven-gauge" aria-label="집중 모드 선택"><span class="oven-dial"><i></i><b></b></span></div><button class="oven-bake" data-focus-mode-picker>굽기　▶</button></section>
   <h2>빠른 메뉴</h2><div class="chagok-quick"><button data-go="tasks"><span class="quick-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10.5L19 8v11.5H5z"/><path d="M15 4.5V8h4M8 12h7M8 15.5h5"/><path d="m14.5 17.5 4.7-4.7 1.5 1.5-4.7 4.7-2.2.7z"/></svg></span><strong>메모 추가하기</strong><small>중요한 메모를 남기세요.</small></button><button data-go="game"><span>✦</span><strong>집중 게임하기</strong><small>잠깐 휴식을 취해보세요.</small></button><button data-go="stats"><span>▤</span><strong>오늘의 기록 보기</strong><small>오늘의 기록을 확인하세요.</small></button><button data-go="focus"><span>◷</span><strong>집중시간 설정하기</strong><small>집중 시간을 정해보세요.</small></button></div>
   <div class="chagok-section-title"><h2>오늘의 할 일</h2><button class="text-link" data-go="tasks">모두 보기 ›</button></div>${list.length?`<div class="chagok-task-list">${list.map(t=>`<div class="chagok-task"><button class="check" data-done="${t.id}"></button><strong>${esc(t.title)}</strong><small>${remain(t.due)}</small></div>`).join('')}</div>`:'<div class="chagok-task-list empty">오늘의 할 일을 모두 마쳤어요 🍪</div>'}</div>`
 }
@@ -43,18 +40,27 @@ function selectDesignDate(year,month,day){const chosen=new Date(year,month,day),
 function shiftDesignMonth(amount){const offset=(Number(window.chagokMonthOffset)||0)+amount,target=new Date(today.getFullYear(),today.getMonth()+offset,1),anchor=Number(window.chagokMonthAnchorDay)||selectedDayDate(),lastDay=new Date(target.getFullYear(),target.getMonth()+1,0).getDate();window.chagokMonthOffset=offset;selectDesignDate(target.getFullYear(),target.getMonth(),Math.min(anchor,lastDay));window.chagokMonthAnchorDay=anchor;render()}
 
 function designFocusPage(){
-  const f=state.focus,elapsed=Math.max(0,Number(f.sessionSeconds)||0),remaining=COOKIE_BAKE_SECONDS-(elapsed%COOKIE_BAKE_SECONDS),total=Math.max(0,Number(f.seconds)||0),rest=liveRestSeconds(),clock=value=>`${String(Math.floor(value/60)).padStart(2,'0')}:${String(value%60).padStart(2,'0')}`;
-  return `<section class="bake-page"><div class="bake-label">쿠키 완성되기까지 남은 시간</div><strong class="bake-status">${f.deviation?'잠깐 쉬는 중':'쿠키 굽는 중'}</strong><div class="oven-focus oven-machine"><img class="oven-machine-art" src="public/assets/chagok-oven.png" alt="쿠키가 구워지는 오븐"/><div class="oven-display"><strong class="focus-timer">${clock(remaining)}</strong><button class="oven-pause" data-action="deviation" aria-label="${f.deviation?'집중으로 돌아오기':'잠깐 쉬기'}">${f.deviation?'▶':'Ⅱ'}</button></div></div><div class="focus-mini-stats"><span>오늘 누적 집중 <b class="focus-total-timer">${clock(total)}</b></span><span id="focus-break-time">휴식 ${clock(rest)}</span></div><div class="focus-controls bake-actions">${f.active?'<button class="button secondary" data-action="stop-focus">집중 그만하기</button>':'<button class="button secondary" data-action="start-focus">집중 시작하기</button>'}</div><p class="bake-message">${f.active?(f.deviation?'휴식 중에는 타이머가 멈춰 있어요.':'집중 시간과 쿠키가 차곡차곡 쌓이고 있어요.'):'집중을 시작하면 25분 타이머가 시작돼요.'}</p><div class="bake-today-total">오늘 누적 집중 <strong>${clock(total)}</strong> · 쉬는 시간은 ${clock(rest)}</div></section>`
+  const f=state.focus,elapsed=Math.max(0,Number(f.sessionSeconds)||0),mode=state.settings.focusMode||'timer',target=Math.max(1,Number(state.settings.focusTimerMinutes)||25)*60,display=mode==='timer'?Math.max(0,target-elapsed):elapsed,total=Math.max(0,Number(f.seconds)||0),rest=liveRestSeconds(),clock=value=>`${String(Math.floor(value/60)).padStart(2,'0')}:${String(value%60).padStart(2,'0')}`;
+  return `<section class="bake-page"><div class="bake-label">${mode==='timer'?'설정한 집중 시간':'연속 집중 시간'}</div><strong class="bake-status">${f.deviation?'잠깐 쉬는 중':mode==='timer'?'타이머 집중 중':'스톱워치 집중 중'}</strong><div class="oven-focus oven-machine"><img class="oven-machine-art" src="public/assets/chagok-oven.png" alt="쿠키가 구워지는 오븐"/><div class="oven-display"><strong class="focus-timer">${clock(display)}</strong><button class="oven-pause" data-action="deviation" aria-label="${f.deviation?'집중으로 돌아오기':'잠깐 쉬기'}">${f.deviation?'▶':'Ⅱ'}</button></div></div><div class="focus-mini-stats"><span>오늘 누적 집중 <b class="focus-total-timer">${clock(total)}</b></span><span id="focus-break-time">휴식 ${clock(rest)}</span></div><div class="focus-controls bake-actions">${f.active?'<button class="button secondary" data-action="stop-focus">집중 그만하기</button>':'<button class="button secondary" data-action="start-focus">집중 시작하기</button>'}</div><p class="bake-message">${f.active?(f.deviation?'휴식 중에는 집중 타이머가 멈춰 있어요.':'집중 시간이 기록되고 있어요.'):'굽기를 눌러 스톱워치 또는 타이머를 선택해요.'}</p><div class="bake-today-total">오늘 누적 집중 <strong>${clock(total)}</strong> · 쉬는 시간은 ${clock(rest)}</div></section>`
 }
 
-function focusCompletePage(){const f=state.focus,clock=value=>`${String(Math.floor(value/60)).padStart(2,'0')}:${String(value%60).padStart(2,'0')}`,cycleDone=(Number(f.sessionSeconds)>0&&Number(f.sessionSeconds)%COOKIE_BAKE_SECONDS===0),remaining=cycleDone?0:COOKIE_BAKE_SECONDS-(Number(f.sessionSeconds||0)%COOKIE_BAKE_SECONDS);return `<section class="bake-complete"><p>${cycleDone?'쿠키가 다 구워졌어요':'집중을 마쳤어요'}</p><h1>${cycleDone?'집중 완료!':'오늘도 수고했어요'}</h1><div class="complete-oven oven-machine"><img class="oven-machine-art" src="public/assets/chagok-oven.png" alt="완성된 쿠키가 든 오븐"/><div class="complete-display">${clock(remaining)}　${cycleDone?'✓':'Ⅱ'}</div></div><p class="complete-summary">이번 연속 집중 ${clock(f.sessionSeconds||0)} · 오늘 누적 ${clock(f.seconds||0)}</p><button class="button full" data-unload-cookie>${cycleDone?'쿠키 꺼내기':'기록 확인하기'}</button><button class="button secondary full" data-bake-again>한 판 더 굽기</button></section>`}
+function openFocusModePicker(){
+  const modal=document.querySelector('#modal-root'),selected=state.settings.focusMode||'timer',minutes=Number(state.settings.focusTimerMinutes)||25;
+  modal.innerHTML=`<div class="modal-backdrop"><section class="modal focus-mode-modal" role="dialog" aria-modal="true" aria-labelledby="focus-mode-title"><div class="modal-top"><h2 id="focus-mode-title">집중 방식을 선택해요</h2><button type="button" class="close" data-mode-cancel aria-label="닫기">×</button></div><form id="focus-mode-form"><label class="focus-mode-choice"><input type="radio" name="focus-mode" value="stopwatch" ${selected==='stopwatch'?'checked':''}/><span><strong>스톱워치 모드</strong><small>원하는 만큼 집중 시간을 기록해요.</small></span></label><label class="focus-mode-choice"><input type="radio" name="focus-mode" value="timer" ${selected==='timer'?'checked':''}/><span><strong>타이머 모드</strong><small>정한 시간이 끝나면 집중을 마쳐요.</small></span></label><label class="field-label" for="focus-timer-minutes">집중 시간 (분)</label><input class="input" id="focus-timer-minutes" type="number" min="1" max="600" step="1" value="${minutes}"/><div class="modal-actions"><button type="button" class="button ghost" data-mode-cancel>취소</button><button class="button" type="submit">집중 시작하기</button></div></form></section></div>`;
+  const form=modal.querySelector('#focus-mode-form'),duration=modal.querySelector('#focus-timer-minutes'),syncDuration=()=>{duration.disabled=form.elements['focus-mode'].value==='stopwatch';duration.closest('.field-label')?.classList.toggle('is-disabled',duration.disabled)};
+  form.querySelectorAll('input[name="focus-mode"]').forEach(input=>input.addEventListener('change',syncDuration));syncDuration();
+  modal.querySelectorAll('[data-mode-cancel]').forEach(button=>button.addEventListener('click',()=>modal.replaceChildren()));
+  form.addEventListener('submit',event=>{event.preventDefault();const mode=form.elements['focus-mode'].value;state.settings.focusMode=mode;if(mode==='timer')state.settings.focusTimerMinutes=Math.min(600,Math.max(1,Number(duration.value)||25));save();modal.replaceChildren();page='focus';if(!state.focus.active)focusAction('start-focus');else render()});
+}
 
-function getTowerFlavors(count){let flavors=[];try{flavors=JSON.parse(localStorage.getItem('chagokTowerFlavors')||'[]')}catch{};while(flavors.length<count)flavors.push(Math.floor(Math.random()*5));flavors=flavors.slice(0,count);try{localStorage.setItem('chagokTowerFlavors',JSON.stringify(flavors))}catch{};return flavors}
+function focusCompletePage(){const f=state.focus,clock=value=>`${String(Math.floor(value/60)).padStart(2,'0')}:${String(value%60).padStart(2,'0')}`;return `<section class="bake-complete"><p>쿠키가 다 구워졌어요</p><h1>집중 완료!</h1><div class="complete-oven oven-machine"><img class="oven-machine-art" src="public/assets/chagok-oven.png" alt="완성된 쿠키가 든 오븐"/><div class="complete-display">${clock(0)}</div><img class="complete-cookie-slide" src="public/assets/tower-cookie-reference.png" alt="오븐에서 나온 쿠키"/></div><p class="complete-summary">이번 연속 집중 ${clock(f.sessionSeconds||0)} · 오늘 누적 ${clock(f.seconds||0)}</p><button class="button full" data-unload-cookie>쿠키 꺼내기</button><button class="button secondary full" data-bake-again>한 판 더 굽기</button></section>`}
+
+function getTowerFlavors(count){const stackPattern=[3,4,2,1,4,3,0,1,2,4,3];let flavors=[];try{flavors=JSON.parse(localStorage.getItem('chagokTowerFlavors')||'[]')}catch{};try{if(localStorage.getItem('chagokTowerPattern')!=='ui-stack-v2'){flavors=[];localStorage.setItem('chagokTowerPattern','ui-stack-v2')}}catch{};while(flavors.length<count)flavors.push(stackPattern[flavors.length%stackPattern.length]);flavors=flavors.slice(0,count);try{localStorage.setItem('chagokTowerFlavors',JSON.stringify(flavors))}catch{};return flavors}
 
 function designStatsPage(){
   const count=state.cookieRewards.loose+state.cookieRewards.boxes*10;
   const flavors=getTowerFlavors(Math.min(11,count));
-  return `<section class="tower-page ${count>=60?'space-tower':''}"><div class="tower-sky"><span class="tower-status">●　${count>=60?'우주':count>0?'산 정상':'등반 준비'}</span><div class="tower-height"><small>현재 고도</small><strong>${count*10}<em>m</em></strong></div><div class="tower-mountains"></div><div class="tower-pile"><span class="tower-base"></span>${flavors.map((flavor,i)=>`<i class="tower-cookie flavor-${flavor}" style="--i:${i}"></i>`).join('')}</div></div><button class="tower-share" data-cookie-share>♧　쿠키 타워 이미지 저장 및 공유</button><details class="tower-record-details"><summary>집중 기록과 스트릭 달력</summary>${originalStatsPage()}</details></section>`
+  return `<section class="tower-page ${count>=60?'space-tower':''}"><div class="tower-sky"><span class="tower-status">●　${count>=60?'우주':count>0?'산 정상':'등반 준비'}</span><div class="tower-height"><small>현재 고도</small><strong>${count*10}<em>m</em></strong></div><div class="tower-mountains" aria-hidden="true"></div><div class="tower-stack"><div class="tower-pile">${flavors.map((flavor,i)=>`<i class="tower-cookie flavor-${flavor}" style="--i:${i};--layer-bottom:${i*45}px;--layer-delay:${i*70}ms;--layer-z:${20-i}"></i>`).join('')}</div><span class="tower-base" aria-hidden="true"></span></div></div><button class="tower-share" data-cookie-share>♧　쿠키 타워 이미지 저장 및 공유</button><details class="tower-record-details"><summary>집중 기록과 스트릭 달력</summary>${originalStatsPage()}</details></section>`
 }
 
 async function shareCookieTower(){
@@ -82,7 +88,6 @@ function designRender(){
   if(page==='home')root.classList.add('chagok-page');else root.classList.remove('chagok-page');
   if(page==='focus'){
     root.querySelector('.character-bubble')?.remove();
-    if(state.focus.active&&!state.focus.deviation&&!cookieBakeWatch){cookieBakeWatch=setInterval(()=>{const current=Math.floor((Number(state.focus.sessionSeconds)||0)/COOKIE_BAKE_SECONDS);if(state.focus.active&&!state.focus.deviation&&current>bakeCyclesSeen){bakeCyclesSeen=current;page='focusDone';render()}},400)}
   }
   if(page==='schedule'){
     root.querySelector('[data-toggle-timeline]')?.addEventListener('click',()=>root.querySelector('.schedule-timeline-wrap')?.classList.toggle('expanded'));
@@ -96,6 +101,7 @@ function designRender(){
     const title=root.querySelector('.page-title');if(title)title.textContent='MY';
   }
   root.querySelectorAll('[data-go="focus"]').forEach(button=>button.addEventListener('click',()=>{if(!state.focus.active)focusAction('start-focus')}));
+  root.querySelectorAll('[data-focus-mode-picker]').forEach(button=>button.addEventListener('click',openFocusModePicker));
   root.querySelectorAll('[data-go="tasks"]').forEach(button=>{if(button.textContent.includes('메모 추가하기'))button.addEventListener('click',()=>setTimeout(()=>openModal('task'),0))});
 }
 
@@ -115,7 +121,11 @@ shareCookieCollection=shareCookieTower;
 cookieUiTick=setInterval(()=>{
   if(page!=='focus')return;
   const timerNode=document.querySelector('.focus-timer');
-  if(timerNode){const elapsed=Number(state.focus.sessionSeconds)||0,left=COOKIE_BAKE_SECONDS-(elapsed%COOKIE_BAKE_SECONDS);timerNode.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`}
+  if(!timerNode)return;
+  const elapsed=Math.max(0,Number(state.focus.sessionSeconds)||0),mode=state.settings.focusMode||'timer',target=Math.max(1,Number(state.settings.focusTimerMinutes)||25)*60;
+  if(mode==='timer'&&state.focus.active&&!state.focus.deviation&&elapsed>=target){focusAction('stop-focus');return}
+  const shown=mode==='timer'?Math.max(0,target-elapsed):elapsed;
+  timerNode.textContent=`${String(Math.floor(shown/60)).padStart(2,'0')}:${String(shown%60).padStart(2,'0')}`;
 },250);
 
 document.addEventListener('click',event=>{

@@ -10,3 +10,41 @@
 .tower-mountains::before,.tower-mountains::after{content:"";position:absolute;inset:0;background:#f8f8f6;pointer-events:none}.tower-mountains::before{clip-path:polygon(43% 19%,34% 50%,42% 35%,46% 40%,50% 31%,58% 54%)}.tower-mountains::after{background:#f5f4f0;clip-path:polygon(76% 13%,65% 49%,74% 31%,79% 37%,84% 29%,92% 52%)}
 .tower-cookie{width:184px;height:92px;margin-top:-50px;border-radius:0;background:transparent url("public/assets/tower-cookie-reference.png") center/100% 100% no-repeat;box-shadow:none;filter:none;overflow:visible}.tower-cookie:nth-child(2n){width:168px}.tower-cookie::after{content:none}.tower-pile .tower-cookie.flavor-0{background:transparent url("public/assets/tower-cookie-reference.png") center/100% 100% no-repeat;filter:none}.tower-pile .tower-cookie.flavor-1{background:transparent url("public/assets/tower-cookie-reference.png") center/100% 100% no-repeat;filter:hue-rotate(55deg) saturate(.75)}.tower-pile .tower-cookie.flavor-2{background:transparent url("public/assets/tower-cookie-reference.png") center/100% 100% no-repeat;filter:brightness(.72) sepia(.28)}.tower-pile .tower-cookie.flavor-3{background:transparent url("public/assets/tower-cookie-reference.png") center/100% 100% no-repeat;filter:hue-rotate(-9deg) brightness(1.06)}.tower-pile .tower-cookie.flavor-4{background:transparent url("public/assets/tower-cookie-reference.png") center/100% 100% no-repeat;filter:hue-rotate(-18deg) saturate(1.05)}
 .oven-cookie{width:59%}.oven-cookie img{width:76%;height:94%}.oven-bake{right:5%;bottom:12%}.oven-gauge{overflow:hidden}.oven-dial{position:relative;display:block;width:76%;aspect-ratio:1;border-radius:50%;background:conic-gradient(from 0deg,#d95352 0 90deg,#f5f2ed 90deg 360deg)}.oven-dial i,.oven-dial b{position:absolute;display:block;z-index:1;background:#40271c;border-radius:3px}.oven-dial i{left:calc(50% - 2px);top:20%;width:4px;height:31%}.oven-dial b{left:50%;top:calc(50% - 2px);width:31%;height:4px}.oven-dial::after{content:"";position:absolute;z-index:2;left:calc(50% - 5px);top:calc(50% - 5px);width:10px;height:10px;border-radius:50%;background:#40271c}.chagok-quick .quick-icon{display:block;width:26px;height:26px}.chagok-quick .quick-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Match the supplied tower scene and simplify the focus display. */
+.brand-logo{transform:translateX(-14px)}
+.tower-sky{background:radial-gradient(ellipse 58px 23px at 79% 37%,#fff 98%,transparent 100%),radial-gradient(ellipse 49px 19px at 19% 55%,#fff 98%,transparent 100%),linear-gradient(180deg,#fffdf8 0%,#edf8fd 58%,#f2ede4 100%)}
+.tower-mountains{z-index:0;inset:40% -5% 0;background:#d9dcdd;clip-path:polygon(0 49%,12% 34%,24% 54%,42% 14%,59% 52%,76% 7%,100% 48%,100% 100%,0 100%)}
+.tower-mountains::before{background:#f9f9f7;clip-path:polygon(42% 14%,33% 43%,41% 32%,46% 37%,50% 26%,59% 52%,48% 42%,43% 37%,39% 45%)}
+.tower-mountains::after{inset:auto -2% 0;height:43%;background:#e9dfcd;clip-path:polygon(0 48%,16% 38%,30% 53%,45% 33%,62% 48%,79% 36%,100% 18%,100% 100%,0 100%)}
+.tower-stack{position:absolute;z-index:2;left:50%;bottom:22px;transform:translateX(-50%);width:min(330px,75%);height:92%}
+.tower-pile{position:absolute;inset:0 0 32px;width:100%;height:auto;transform:none;display:block}
+.tower-cookie{position:absolute;left:50%;bottom:calc(var(--i)*45px);z-index:calc(20 - var(--i));margin:0 0 0 -92px;width:184px;height:92px}
+.tower-cookie:nth-child(2n){width:168px;margin-left:-84px}
+.tower-base{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:30;width:94%;height:34px;background:linear-gradient(180deg,#745449 0 70%,#50352c 71%);clip-path:polygon(13% 0,87% 0,100% 100%,0 100%)}
+.oven-machine::before{content:"";position:absolute;z-index:1;left:36%;top:8.6%;width:28%;height:2%;border-radius:9px;background:#e8e0d4}
+.oven-machine .oven-display,.oven-machine .complete-display{z-index:2}
+.oven-machine .oven-pause{z-index:3}
+
+/* Final fit and motion for timer and reward states. */
+.brand-logo{transform:translateX(-30px)}
+.oven-machine .oven-display .focus-timer{position:absolute;left:7%;right:23%;width:auto;text-align:center;white-space:nowrap}
+.oven-machine .oven-pause{right:5%;z-index:3}
+.oven-machine .oven-display{z-index:2}
+.oven-machine::before{z-index:1}
+.complete-cookie-slide{position:absolute;z-index:4;left:50%;bottom:13%;width:61%;height:30%;object-fit:contain;opacity:0;filter:drop-shadow(0 12px 8px #4b291e55);animation:cookie-slide-out .9s .12s cubic-bezier(.2,.75,.25,1) forwards}
+@keyframes cookie-slide-out{0%{opacity:0;transform:translate(-50%,52%) scale(.68)}35%{opacity:1}100%{opacity:1;transform:translate(-50%,-28%) scale(1.12)}}
+.focus-mode-choice{display:flex;align-items:flex-start;gap:12px;margin:11px 0;padding:14px;border:1px solid #eee4d8;border-radius:16px;background:#fffdf9;cursor:pointer}
+.focus-mode-choice input{margin:3px 0 0;accent-color:#e9945d}
+.focus-mode-choice span{display:grid;gap:4px}
+.focus-mode-choice strong{font:16px var(--display);color:var(--choco)}
+.focus-mode-choice small{font-size:12px;color:#89776b}
+.focus-mode-modal .input{max-width:170px}
+.tower-pile{z-index:2}
+.tower-cookie{bottom:var(--layer-bottom);z-index:var(--layer-z);animation-delay:var(--layer-delay)}
+.tower-base{z-index:1}
+.bake-complete{display:flex;flex-direction:column;align-items:center;padding-top:54px}
+.bake-complete>p:first-child,.bake-complete h1,.bake-complete .complete-summary,.bake-complete>.button{width:100%;max-width:420px}
+.bake-complete h1{margin:8px 0 22px}
+.complete-oven.oven-machine{flex:none;margin:0 auto 20px;width:min(100%,420px)}
+.bake-complete .complete-summary{margin:0 auto 18px}
