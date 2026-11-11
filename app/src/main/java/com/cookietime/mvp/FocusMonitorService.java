@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -89,17 +90,27 @@ public class FocusMonitorService extends Service {
             return result;
         }catch(Exception e){ return ""; }
     }
+    private int dp(int value){return Math.round(value*getResources().getDisplayMetrics().density);}
     private void showOverlay(){
         if(overlay!=null || Build.VERSION.SDK_INT>=23 && !android.provider.Settings.canDrawOverlays(this)) return;
-        LinearLayout root=new LinearLayout(this); root.setGravity(Gravity.CENTER_VERTICAL); root.setPadding(12,7,16,7); root.setOrientation(LinearLayout.HORIZONTAL);
-        GradientDrawable bg=new GradientDrawable(); bg.setColor(0xff3d3028); bg.setCornerRadius(28); root.setBackground(bg);
-        ImageView cookie=new ImageView(this); try(InputStream in=getAssets().open("www/public/assets/cookie-character.png")){ cookie.setImageDrawable(android.graphics.drawable.Drawable.createFromStream(in,null)); }catch(Exception ignored){}
+        LinearLayout root=new LinearLayout(this); root.setGravity(Gravity.CENTER_VERTICAL); root.setOrientation(LinearLayout.HORIZONTAL); root.setClipChildren(false); root.setClipToPadding(false); root.setContentDescription("쿠키 집중 알림. 눌러서 사용 시간 조절");
+        ImageView cookie=new ImageView(this); cookie.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        GradientDrawable iconBg=new GradientDrawable(); iconBg.setShape(GradientDrawable.OVAL); iconBg.setColor(0xfffff7ed); iconBg.setStroke(dp(1),0xffffdfc5); cookie.setBackground(iconBg); cookie.setPadding(dp(3),dp(3),dp(3),dp(3));
+        try(InputStream in=getAssets().open("www/public/assets/cookie-character.png")){ cookie.setImageDrawable(android.graphics.drawable.Drawable.createFromStream(in,null)); }catch(Exception ignored){}
         if(!getSharedPreferences("cookie-native",MODE_PRIVATE).getBoolean("character-enabled",true))cookie.setVisibility(View.GONE);
-        root.addView(cookie,new LinearLayout.LayoutParams(45,45));
-        LinearLayout copy=new LinearLayout(this); copy.setOrientation(LinearLayout.VERTICAL); copy.setPadding(8,0,0,0);
-        bubbleText=new TextView(this); bubbleText.setText("잠깐, 쿠키랑 돌아갈까요?"); bubbleText.setTextColor(0xfffff7ed); bubbleText.setTextSize(13); bubbleText.setTypeface(null,1);
-        elapsedText=new TextView(this); elapsedText.setTextColor(0xffffd3ad); elapsedText.setTextSize(12);
-        copy.addView(bubbleText); copy.addView(elapsedText); budgetText=new TextView(this); budgetText.setTextColor(0xffffd3ad); budgetText.setTextSize(11); copy.addView(budgetText); root.addView(copy);
+        root.addView(cookie,new LinearLayout.LayoutParams(dp(50),dp(50)));
+
+        FrameLayout speech=new FrameLayout(this); speech.setClipChildren(false); speech.setClipToPadding(false);
+        GradientDrawable bubbleBg=new GradientDrawable(); bubbleBg.setColor(0xfffffbf5); bubbleBg.setCornerRadius(dp(17)); bubbleBg.setStroke(dp(1),0xffffdfc5);
+        View tail=new View(this); tail.setBackgroundColor(0xfffffbf5); tail.setRotation(45f); tail.setElevation(dp(3));
+        FrameLayout.LayoutParams tailParams=new FrameLayout.LayoutParams(dp(12),dp(12),Gravity.CENTER_VERTICAL|Gravity.LEFT); tailParams.leftMargin=dp(1); speech.addView(tail,tailParams);
+        LinearLayout copy=new LinearLayout(this); copy.setOrientation(LinearLayout.VERTICAL); copy.setPadding(dp(11),dp(8),dp(12),dp(8)); copy.setBackground(bubbleBg); copy.setElevation(dp(5));
+        bubbleText=new TextView(this); bubbleText.setText("잠깐, 쿠키랑 돌아갈까요?"); bubbleText.setTextColor(0xff49362d); bubbleText.setTextSize(13); bubbleText.setTypeface(null,1); bubbleText.setMaxWidth(dp(220));
+        elapsedText=new TextView(this); elapsedText.setTextColor(0xff8f7563); elapsedText.setTextSize(11);
+        budgetText=new TextView(this); budgetText.setTextColor(0xffbd7951); budgetText.setTextSize(10);
+        copy.addView(bubbleText); copy.addView(elapsedText); copy.addView(budgetText);
+        FrameLayout.LayoutParams copyParams=new FrameLayout.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT,Gravity.CENTER_VERTICAL|Gravity.LEFT); copyParams.leftMargin=dp(6); speech.addView(copy,copyParams);
+        LinearLayout.LayoutParams speechParams=new LinearLayout.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT); speechParams.leftMargin=dp(4); root.addView(speech,speechParams);
         WindowManager.LayoutParams params=new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT,Build.VERSION.SDK_INT>=26?WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY:WindowManager.LayoutParams.TYPE_PHONE,WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,PixelFormat.TRANSLUCENT);
         android.content.SharedPreferences positionPrefs=getSharedPreferences("cookie-native",MODE_PRIVATE);int savedX=positionPrefs.getInt("overlay-x",-1);params.gravity=Gravity.TOP|(savedX>=0?Gravity.START:Gravity.CENTER_HORIZONTAL);params.x=Math.max(0,savedX);params.y=Math.max(0,positionPrefs.getInt("overlay-y",72));
         final float[] dragStart={0,0};final int[] positionStart={0,0};root.setOnTouchListener((view,event)->{switch(event.getActionMasked()){case MotionEvent.ACTION_DOWN:dragStart[0]=event.getRawX();dragStart[1]=event.getRawY();positionStart[0]=params.x;positionStart[1]=params.y;return true;case MotionEvent.ACTION_MOVE:params.gravity=Gravity.TOP|Gravity.START;params.x=Math.max(0,positionStart[0]+Math.round(event.getRawX()-dragStart[0]));params.y=Math.max(0,positionStart[1]+Math.round(event.getRawY()-dragStart[1]));try{windowManager.updateViewLayout(root,params);}catch(Exception ignored){}return true;case MotionEvent.ACTION_UP:case MotionEvent.ACTION_CANCEL:if(Math.abs(event.getRawX()-dragStart[0])+Math.abs(event.getRawY()-dragStart[1])<18)handleBudgetTap();else{int screen=windowManager.getDefaultDisplay().getWidth();params.x=params.x+root.getWidth()/2>screen/2?Math.max(0,screen-root.getWidth()):0;try{windowManager.updateViewLayout(root,params);}catch(Exception ignored){}positionPrefs.edit().putInt("overlay-x",params.x).putInt("overlay-y",params.y).apply();}return true;default:return false;}});
