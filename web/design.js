@@ -22,7 +22,7 @@ function designHomePage(){
   const list=sortedTasks().filter(t=>!t.done).slice(0,2);
   return `<div class="chagok-home"><div class="home-date">${today.getMonth()+1}월 ${today.getDate()}일 · ${weekdays[today.getDay()]}요일</div><h1>오늘도 가볍게 시작해요</h1><p class="home-subtitle">작은 시작이 하루의 리듬을 바꿔요.</p>
   <section class="oven-home"><div class="oven-slot"></div><div class="oven-cookie"><img src="public/assets/chagok-mascot.png" alt="차곡 쿠키 캐릭터"/></div><div class="oven-gauge" aria-label="25분 타이머"><span class="oven-dial"><i></i><b></b></span></div><button class="oven-bake" data-go="focus">굽기　▶</button></section>
-  <h2>빠른 메뉴</h2><div class="chagok-quick"><button data-go="tasks"><span class="quick-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h11v4H8v12h12v-8"/><path d="m14 17 7-7-3-3-7 7-1 4z"/></svg></span><strong>메모 추가하기</strong><small>중요한 메모를 남기세요.</small></button><button data-go="game"><span>✦</span><strong>집중 게임하기</strong><small>잠깐 휴식을 취해보세요.</small></button><button data-go="stats"><span>▤</span><strong>오늘의 기록 보기</strong><small>오늘의 기록을 확인하세요.</small></button><button data-go="focus"><span>◷</span><strong>집중시간 설정하기</strong><small>집중 시간을 정해보세요.</small></button></div>
+  <h2>빠른 메뉴</h2><div class="chagok-quick"><button data-go="tasks"><span class="quick-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10.5L19 8v11.5H5z"/><path d="M15 4.5V8h4M8 12h7M8 15.5h5"/><path d="m14.5 17.5 4.7-4.7 1.5 1.5-4.7 4.7-2.2.7z"/></svg></span><strong>메모 추가하기</strong><small>중요한 메모를 남기세요.</small></button><button data-go="game"><span>✦</span><strong>집중 게임하기</strong><small>잠깐 휴식을 취해보세요.</small></button><button data-go="stats"><span>▤</span><strong>오늘의 기록 보기</strong><small>오늘의 기록을 확인하세요.</small></button><button data-go="focus"><span>◷</span><strong>집중시간 설정하기</strong><small>집중 시간을 정해보세요.</small></button></div>
   <div class="chagok-section-title"><h2>오늘의 할 일</h2><button class="text-link" data-go="tasks">모두 보기 ›</button></div>${list.length?`<div class="chagok-task-list">${list.map(t=>`<div class="chagok-task"><button class="check" data-done="${t.id}"></button><strong>${esc(t.title)}</strong><small>${remain(t.due)}</small></div>`).join('')}</div>`:'<div class="chagok-task-list empty">오늘의 할 일을 모두 마쳤어요 🍪</div>'}</div>`
 }
 
@@ -40,6 +40,7 @@ function designSchedulePage(){
 }
 function selectedDayDate(){return window.chagokSelectedDate||today.getDate()}
 function selectDesignDate(year,month,day){const chosen=new Date(year,month,day),base=new Date(today.getFullYear(),today.getMonth(),today.getDate());base.setDate(base.getDate()-base.getDay());const chosenWeek=new Date(chosen.getFullYear(),chosen.getMonth(),chosen.getDate());chosenWeek.setDate(chosenWeek.getDate()-chosenWeek.getDay());window.chagokSelectedDate=day;window.chagokMonthAnchorDay=day;selectedDay=chosen.getDay();weekOffset=Math.round((chosenWeek-base)/604800000)}
+function shiftDesignMonth(amount){const offset=(Number(window.chagokMonthOffset)||0)+amount,target=new Date(today.getFullYear(),today.getMonth()+offset,1),anchor=Number(window.chagokMonthAnchorDay)||selectedDayDate(),lastDay=new Date(target.getFullYear(),target.getMonth()+1,0).getDate();window.chagokMonthOffset=offset;selectDesignDate(target.getFullYear(),target.getMonth(),Math.min(anchor,lastDay));window.chagokMonthAnchorDay=anchor;render()}
 
 function designFocusPage(){
   const f=state.focus,elapsed=Math.max(0,Number(f.sessionSeconds)||0),remaining=COOKIE_BAKE_SECONDS-(elapsed%COOKIE_BAKE_SECONDS),total=Math.max(0,Number(f.seconds)||0),rest=liveRestSeconds(),clock=value=>`${String(Math.floor(value/60)).padStart(2,'0')}:${String(value%60).padStart(2,'0')}`;
@@ -84,8 +85,6 @@ function designRender(){
     if(state.focus.active&&!state.focus.deviation&&!cookieBakeWatch){cookieBakeWatch=setInterval(()=>{const current=Math.floor((Number(state.focus.sessionSeconds)||0)/COOKIE_BAKE_SECONDS);if(state.focus.active&&!state.focus.deviation&&current>bakeCyclesSeen){bakeCyclesSeen=current;page='focusDone';render()}},400)}
   }
   if(page==='schedule'){
-    root.querySelectorAll('[data-month-day]').forEach(button=>button.addEventListener('click',()=>{const visible=new Date(today.getFullYear(),today.getMonth()+(Number(window.chagokMonthOffset)||0),Number(button.dataset.monthDay));selectDesignDate(visible.getFullYear(),visible.getMonth(),visible.getDate());render()}));
-    root.querySelectorAll('[data-month-shift]').forEach(button=>button.addEventListener('click',()=>{const offset=(Number(window.chagokMonthOffset)||0)+Number(button.dataset.monthShift),target=new Date(today.getFullYear(),today.getMonth()+offset,1),anchor=Number(window.chagokMonthAnchorDay)||selectedDayDate(),lastDay=new Date(target.getFullYear(),target.getMonth()+1,0).getDate();window.chagokMonthOffset=offset;window.chagokMonthAnchorDay=anchor;selectDesignDate(target.getFullYear(),target.getMonth(),Math.min(anchor,lastDay));window.chagokMonthAnchorDay=anchor;render()}));
     root.querySelector('[data-toggle-timeline]')?.addEventListener('click',()=>root.querySelector('.schedule-timeline-wrap')?.classList.toggle('expanded'));
   }
   if(page==='stats')root.querySelector('.tower-page')?.classList.toggle('space-tower',state.cookieRewards.loose+state.cookieRewards.boxes*10>=60);
@@ -127,6 +126,13 @@ document.addEventListener('click',event=>{
   }
   if(event.target.closest('[data-go="focus"]')&&!state.focus.active)focusAction('start-focus');
 });
+
+document.addEventListener('click',event=>{
+  const shift=event.target.closest('[data-month-shift]');
+  if(shift&&page==='schedule'){event.preventDefault();event.stopPropagation();shiftDesignMonth(Number(shift.dataset.monthShift));return}
+  const dayButton=event.target.closest('[data-month-day]');
+  if(dayButton&&page==='schedule'){event.preventDefault();event.stopPropagation();const visible=new Date(today.getFullYear(),today.getMonth()+(Number(window.chagokMonthOffset)||0),Number(dayButton.dataset.monthDay));selectDesignDate(visible.getFullYear(),visible.getMonth(),visible.getDate());render()}
+},true);
 
 document.addEventListener('DOMContentLoaded',()=>{
   const nav=document.querySelector('.bottom-nav');
