@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private WebView webView;
+    private HardwareBluetooth hardwareBluetooth;
     private static final int NOTIFICATION_REQUEST = 4001;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class MainActivity extends Activity {
         });
         webView.setWebChromeClient(new WebChromeClient());
         webView.addJavascriptInterface(new NativeBridge(this, webView), "NativeMvp");
+        hardwareBluetooth = new HardwareBluetooth(this, webView);
         setContentView(webView);
         NativeNotifications.createChannels(this);
         webView.loadUrl("file:///android_asset/www/index.html");
@@ -49,6 +51,21 @@ public class MainActivity extends Activity {
     }
 
     @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); if(webView!=null) webView.postDelayed(()->{dispatchStartFocus();dispatchExternalActions();},350); }
+
+    void connectHardware() { runOnUiThread(() -> hardwareBluetooth.connect()); }
+    void sendHardwareCommand(String command) { hardwareBluetooth.send(command); }
+    void disconnectHardware() { hardwareBluetooth.disconnect(); }
+    boolean isHardwareConnected() { return hardwareBluetooth != null && hardwareBluetooth.isConnected(); }
+
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (hardwareBluetooth != null) hardwareBluetooth.onPermissionResult(requestCode, grantResults);
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (hardwareBluetooth != null) hardwareBluetooth.onActivityResult(requestCode, resultCode);
+    }
 
     private void dispatchExternalActions(){ if(webView==null)return; Intent intent=getIntent(); if(intent==null)return; if(intent.getBooleanExtra("open_missions",false)){intent.removeExtra("open_missions");webView.evaluateJavascript("window.openMissionFromOverlay && window.openMissionFromOverlay()",null);} String title=intent.getStringExtra("class_end_title");if(title!=null){intent.removeExtra("class_end_title");String safe=org.json.JSONObject.quote(title);webView.evaluateJavascript("window.openClassEndFromNotification && window.openClassEndFromNotification("+safe+")",null);} }
 
@@ -62,6 +79,12 @@ public class MainActivity extends Activity {
 
     @Override public void onBackPressed() {
         if (webView != null && webView.canGoBack()) webView.goBack(); else super.onBackPressed();
+    }
+
+    @Override protected void onDestroy() {
+        if (hardwareBluetooth != null) hardwareBluetooth.shutdown();
+        if (webView != null) webView.destroy();
+        super.onDestroy();
     }
 
     boolean hasUsageAccess() {

@@ -28,6 +28,10 @@ public class NativeBridge {
     @JavascriptInterface public void requestPermission(String kind) { activity.runOnUiThread(() -> activity.requestPermission(kind)); }
     @JavascriptInterface public boolean startMonitoring() { boolean permitted=activity.hasUsageAccess() && hasOverlayPermission(); activity.runOnUiThread(activity::startMonitor); return permitted; }
     @JavascriptInterface public void stopMonitoring() { activity.runOnUiThread(activity::stopMonitor); }
+    @JavascriptInterface public void connectHardware() { activity.connectHardware(); }
+    @JavascriptInterface public void disconnectHardware() { activity.disconnectHardware(); }
+    @JavascriptInterface public boolean isHardwareConnected() { return activity.isHardwareConnected(); }
+    @JavascriptInterface public void sendHardwareCommand(String command) { activity.sendHardwareCommand(command); }
     @JavascriptInterface public void vibrate(long milliseconds) {
         Vibrator vibrator=(Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator == null || !vibrator.hasVibrator()) return;
