@@ -48,3 +48,25 @@
 .bake-complete h1{margin:8px 0 22px}
 .complete-oven.oven-machine{flex:none;margin:0 auto 20px;width:min(100%,420px)}
 .bake-complete .complete-summary{margin:0 auto 18px}
+
+/* Align the shared header and present the selected day as a readable timeline. */
+.brand-logo{transform:none}
+.focus-duration-field[hidden]{display:none!important}
+.schedule-timeline-wrap{margin-top:20px}
+.schedule-timeline-wrap>.section-head{margin:24px 1px 16px;align-items:center}
+.schedule-timeline-wrap>.section-head h2{font:22px var(--display);margin:0}
+.schedule-timeline-wrap>.section-head .button{padding:11px 14px;border-radius:18px}
+.schedule-day-content>.section-head,.schedule-day-content>.notice{display:none!important}
+.schedule-day-content .schedule-list{display:grid;gap:15px}
+.schedule-day-content .schedule-row{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:start}
+.schedule-day-content .schedule-time{padding-top:14px;color:#aaa7a3;font-size:14px}
+.schedule-day-content .schedule-block{min-width:0;padding:19px 18px;border:0;border-left:4px solid #805321;border-radius:0 23px 23px 0;background:#f4f2ef;box-shadow:none}
+.schedule-day-content .schedule-block strong{display:block;margin:0 0 8px;font:20px var(--display);color:#24211e}
+.schedule-day-content .schedule-block small{display:block;color:#898581;font-size:14px;line-height:1.5}
+.schedule-day-content .class-actions{margin-top:8px}
+.schedule-day-content .free-slot{position:relative;margin:0 0 0 64px;padding:13px 14px;min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1.5px dashed #d8c9b8;border-radius:22px;background:#fff}
+.schedule-day-content .free-slot span:first-child{color:#817f7c;font-size:14px;white-space:nowrap}
+.schedule-day-content .free-slot span:last-child{color:#898581;font-size:14px;text-align:right}
+.schedule-day-content .recommend-card{margin:-5px 0 0 76px;padding:16px 17px;border-radius:20px}
+.schedule-day-content .recommend-card p{font-size:13px}
+.schedule-day-content .week-empty{margin-top:12px}@media(max-width:380px){.schedule-day-content .schedule-row{grid-template-columns:45px minmax(0,1fr);gap:9px}.schedule-day-content .free-slot{margin-left:54px}.schedule-day-content .recommend-card{margin-left:63px}}
