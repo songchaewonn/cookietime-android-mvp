@@ -9,14 +9,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=0.3.18" />
-  <link rel="stylesheet" href="design.css?v=1.0.0" />
+  <link rel="stylesheet" href="styles.css?v=0.3.19" />
+  <link rel="stylesheet" href="design.css?v=1.0.1" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="#home" aria-label="쿠키타임 홈"><span class="brand-mark">c</span><span>cookie<span class="brand-light">time</span></span></a>
-      <div class="topbar-actions"><button class="account-button" id="account-shortcut" aria-label="Google 간편 로그인">로그인</button><button class="icon-button" id="settings-shortcut" aria-label="설정 열기">☼</button></div>
+      <a class="brand" href="#home" aria-label="차곡 홈"><img class="brand-logo" src="public/assets/chagok-logo.png" alt="chagok" /></a>
+      <div class="topbar-actions"><button class="account-button" id="account-shortcut" aria-label="Google 간편 로그인">로그인</button><button class="icon-button notification-bell" id="settings-shortcut" aria-label="알림과 설정 열기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button></div>
     </header>
 
     <main id="app" aria-live="polite"></main>
@@ -30,12 +30,12 @@
   </div>
   <div id="toast" class="toast" role="status"></div>
   <div id="modal-root"></div>
-  <script src="auth-config.js?v=0.3.18"></script>
+  <script src="auth-config.js?v=0.3.19"></script>
   <script defer src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth-compat.js"></script>
-  <script defer src="auth.js?v=0.3.18"></script>
-  <script defer src="app.js?v=0.3.18"></script>
-  <script defer src="design.js?v=1.0.0"></script>
+  <script defer src="auth.js?v=0.3.19"></script>
+  <script defer src="app.js?v=0.3.19"></script>
+  <script defer src="design.js?v=1.0.1"></script>
   <script defer src="hardware.js?v=0.1.0"></script>
 </body>
 </html>
