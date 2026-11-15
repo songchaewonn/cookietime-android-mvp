@@ -24,3 +24,7 @@
 .focus-clock-label{margin-top:2px;color:#9d7656;font-size:12px;font-weight:700}.focus-timer{font-variant-numeric:tabular-nums}.focus-break-timer{font-variant-numeric:tabular-nums}.focus-detail-row{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:14px;margin:2px 0 12px;color:#927c69;font-size:12px}.focus-detail-row strong{color:#654a3b;font-size:12px;font-variant-numeric:tabular-nums}
 /* Hardware connection status under the focus controls. */
 .hardware-connect-row{display:grid;justify-items:center;gap:7px;margin:12px auto 0}.hardware-connect-row .button{min-width:190px}.hardware-connect-row small{font-size:11px;color:var(--muted);text-align:center;line-height:1.4}
+
+/* Keep all three task-start choices readable on mobile. */
+.task-start-actions{flex-direction:column}
+.task-start-actions>.button{flex:auto;width:100%}

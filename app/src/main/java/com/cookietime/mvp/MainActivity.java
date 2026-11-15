@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
         if (hardwareBluetooth != null) hardwareBluetooth.onActivityResult(requestCode, resultCode);
     }
 
-    private void dispatchExternalActions(){ if(webView==null)return; Intent intent=getIntent(); if(intent==null)return; if(intent.getBooleanExtra("open_missions",false)){intent.removeExtra("open_missions");webView.evaluateJavascript("window.openMissionFromOverlay && window.openMissionFromOverlay()",null);} String title=intent.getStringExtra("class_end_title");if(title!=null){intent.removeExtra("class_end_title");String safe=org.json.JSONObject.quote(title);webView.evaluateJavascript("window.openClassEndFromNotification && window.openClassEndFromNotification("+safe+")",null);} }
+    private void dispatchExternalActions(){ if(webView==null)return; Intent intent=getIntent(); if(intent==null)return; if(intent.getBooleanExtra("start_game",false)){intent.removeExtra("start_game");webView.evaluateJavascript("window.startGameFromNotification && window.startGameFromNotification()",null);} if(intent.getBooleanExtra("open_missions",false)){intent.removeExtra("open_missions");webView.evaluateJavascript("window.openMissionFromOverlay && window.openMissionFromOverlay()",null);} String title=intent.getStringExtra("class_end_title");if(title!=null){intent.removeExtra("class_end_title");String safe=org.json.JSONObject.quote(title);webView.evaluateJavascript("window.openClassEndFromNotification && window.openClassEndFromNotification("+safe+")",null);} }
 
     private void dispatchStartFocus(){
         Intent intent=getIntent();

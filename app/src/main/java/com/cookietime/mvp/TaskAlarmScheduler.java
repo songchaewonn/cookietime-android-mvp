@@ -71,7 +71,6 @@ final class TaskAlarmScheduler {
         catch(SecurityException denied) { alarm.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,at,pending); }
     }
     static void snooze(Context context,String taskId,String title,int snoozes) {
-        if(snoozes>=2) return;
         long at=System.currentTimeMillis()+5*60_000L; AlarmManager alarm=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         int request=(taskId+":snooze").hashCode(); Intent intent=new Intent(context,CountdownReceiver.class).putExtra("title",title).putExtra("taskId",taskId).putExtra("kind","start").putExtra("minutes",0).putExtra("snoozes",snoozes+1);
         PendingIntent pending=PendingIntent.getBroadcast(context,request,intent,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);

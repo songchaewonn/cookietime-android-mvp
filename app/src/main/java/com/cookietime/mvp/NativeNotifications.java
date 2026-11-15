@@ -44,11 +44,14 @@ final class NativeNotifications {
             Intent open=new Intent(context,MainActivity.class).putExtra("start_focus",true).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent start=PendingIntent.getActivity(context,(taskId+":start").hashCode(),open,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
             builder.addAction(android.R.drawable.ic_media_play,"집중 시작",start);
-            if(snoozes<2) {
+            {
                 Intent defer=new Intent(context,CountdownReceiver.class).setAction(CountdownReceiver.ACTION_SNOOZE).putExtra("title",title).putExtra("taskId",taskId).putExtra("snoozes",snoozes);
                 PendingIntent snooze=PendingIntent.getBroadcast(context,(taskId+":snooze-action").hashCode(),defer,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
                 builder.addAction(android.R.drawable.ic_lock_idle_alarm,"5분만 더",snooze);
             }
+            Intent gameOpen=new Intent(context,MainActivity.class).putExtra("start_game",true).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent game=PendingIntent.getActivity(context,(taskId+":game").hashCode(),gameOpen,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+            builder.addAction(android.R.drawable.ic_media_play,"인지 유연성 게임 시작",game);
         }
         Notification notification=builder.build();
         manager.notify((title+minutes).hashCode(),notification);
