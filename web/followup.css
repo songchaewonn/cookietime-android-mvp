@@ -1,0 +1,65 @@
+.notification-bell i{display:none}
+.notification-bell.has-unread i{display:block}
+#save-apps{background:#f2ad72;color:#fffaf4;border-color:#f2ad72}
+.settings-edit-toggle{width:100%;margin:16px 0 20px;background:#fff1e2;color:#9d6038;border:1px solid #f2d6bb}
+.settings-profile-card{display:flex;align-items:center;gap:12px;margin:18px 0 8px;padding:14px 16px;border:1px solid #eee5dc;border-radius:20px;background:#f6f3ef}
+.settings-profile-card .settings-avatar{display:grid;place-items:center;width:48px;height:48px;flex:none;border-radius:50%;background:#f3dfbf;font-size:24px}
+.settings-profile-card strong,.settings-profile-card small{display:block}
+.settings-profile-card small{margin-top:4px;color:#938377;font-size:12px}
+.settings-profile-card button{margin-left:auto;border:0;background:none;color:#8d7a6d;font:inherit}
+.settings-edit-panel[hidden]{display:none!important}
+.app-shell main:has(.my-category-section){padding-top:18px;padding-bottom:126px}
+.app-shell main:has(.my-category-section)>.my-profile-card{min-height:112px;margin:2px 0 18px;padding:16px 18px;border:1px solid #e7e4e1;border-radius:28px;background:#f5f3f0;box-shadow:0 2px 3px #24180d12}
+.app-shell main:has(.my-category-section)>.my-profile-card>span{width:68px;height:68px;border-radius:50%;background:#f3dfbf;font-size:29px}
+.app-shell main:has(.my-category-section)>.my-profile-card>div strong{font:22px var(--display);color:#38251b}
+.app-shell main:has(.my-category-section)>.my-profile-card>div small{font-size:14px;color:#908178}
+.app-shell main:has(.my-category-section)>.my-profile-card>button{font-size:14px;padding:10px 4px}
+.app-shell main:has(.my-category-section)>.profile-login-link{margin:-10px 4px 17px auto}
+.app-shell main:has(.my-category-section)>.page-title{margin:9px 0 15px;font:25px/1.25 var(--display);color:#38251b}
+.my-category-section h2{margin:10px 0 13px;font:23px/1.3 var(--display);color:#38251b}
+.my-category-card,.my-account-links{overflow:hidden;border:1px solid #e4e3e1;border-radius:25px;background:#fff;box-shadow:0 2px 3px #24180d12}
+.my-category-row{width:100%;min-height:88px;display:flex;align-items:center;gap:15px;padding:14px 18px;border:0;border-bottom:1px solid #e1e1df;background:#fff;text-align:left;color:#38251b}
+.my-category-row:last-child{border-bottom:0}
+.my-category-icon{width:54px;height:54px;flex:none;display:grid;place-items:center;border-radius:50%;background:#f5f3f0;color:#38251b;font:25px/1 var(--font)}
+.my-category-copy{min-width:0;flex:1;display:grid;gap:4px}
+.my-category-copy strong{font:18px/1.35 var(--display)}
+.my-category-copy small{color:#938377;font:13px/1.45 var(--font)}
+.my-category-chevron{color:#aa9e95;font-size:28px;line-height:1}
+.my-account-links{margin-top:20px}
+.my-account-link{width:100%;min-height:70px;display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border:0;border-bottom:1px solid #e1e1df;background:#fff;text-align:left;text-decoration:none;color:#38251b;font:18px var(--display)}
+.my-account-link:last-child{border-bottom:0}
+.my-account-link>span{color:#aa9e95;font:28px/1 var(--font)}
+.my-account-link small{margin-left:8px;color:#938377;font:14px var(--font)}
+.my-account-link.my-logout{color:#938377}
+.my-app-info-card{margin-top:18px}
+.my-app-info-card p{margin:8px 0;color:#938377}
+.my-app-info-card small{color:#938377}
+.settings-edit-toggle{margin:14px 0 18px}
+.settings-edit-panel>*{scroll-margin-top:12px}
+.notification-history{display:grid;gap:9px;margin-top:12px}
+.notification-history-item{padding:12px;border:1px solid #eee5dc;border-radius:14px;background:#fff}
+.notification-history-item small{display:block;margin-top:5px;color:#938377}
+.oven-window img{filter:drop-shadow(0 0 11px #ff5b2d) drop-shadow(0 3px 5px #f23b1c88) saturate(1.12)}
+.app-shell:has(.integrated-tower)>.topbar .brand,.app-shell:has(.integrated-tower)>.topbar .topbar-actions{transform:translateY(9px)}
+.app-shell:has(.integrated-tower)>.bottom-nav{width:min(390px,100%);height:82px;bottom:20px;margin-bottom:8px;border:1px solid #eee5d8;border-radius:30px;background:#faf6ef;padding:8px 12px max(9px,env(safe-area-inset-bottom));box-shadow:0 5px 15px #44311e18;backdrop-filter:none}
+.app-shell:has(.integrated-tower)>.bottom-nav .nav-item{height:auto;gap:initial;color:#8b7c72}
+.app-shell:has(.integrated-tower)>.bottom-nav .nav-item.active{color:var(--choco)}
+.app-shell:has(.integrated-tower)>.bottom-nav small{font:inherit;font-size:10px}
+.schedule-view-toggle{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:#f4eee6;white-space:nowrap}
+.schedule-view-toggle button{min-width:42px;padding:6px 9px;border:0;border-radius:999px;background:transparent;color:#927d6d;font:12px var(--font)}
+.schedule-view-toggle button.active{background:#fff;color:#573b2d;box-shadow:0 1px 4px #402b2018}
+.schedule-calendar-header{margin:15px 0 16px}
+.schedule-calendar-title{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.schedule-calendar-title h1{min-width:0;margin:0;color:var(--choco);font:24px/1.2 var(--display);letter-spacing:-.45px;white-space:nowrap}
+.schedule-calendar-title .month-add{flex:none;width:48px;height:48px;border:0;border-radius:50%;background:#f4bd73;color:var(--choco);font-size:27px;line-height:1}
+.schedule-calendar-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.schedule-range{min-width:0;display:flex;align-items:center;gap:8px;color:#8b786a;font-size:13px}
+.schedule-range button{flex:none;width:26px;height:30px;border:0;background:transparent;color:#8b786a;font-size:20px}
+.schedule-range span{white-space:nowrap}
+.schedule-calendar-header+.month-calendar{margin-top:0}
+.schedule-date-prompt{margin:18px 0;text-align:center;color:#938377;font-size:13px}
+.schedule-calendar-header+.day-strip{margin:15px 0 19px}
+.lcd-timer-preview{display:grid;justify-items:center;gap:5px;margin:18px 0;padding:16px;border-radius:18px;background:#3c291e;color:#fff5e9}
+.lcd-timer-preview small{color:#d9c7b7;font-size:12px}
+.lcd-timer-preview strong{font:700 36px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:2px}
+@media(max-width:599px){.app-shell:has(.integrated-tower)>.bottom-nav{bottom:0}.schedule-calendar-title h1{font-size:clamp(21px,6vw,24px)}}

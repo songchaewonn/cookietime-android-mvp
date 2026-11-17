@@ -9,34 +9,41 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=0.4.2" />
-  <link rel="stylesheet" href="design.css?v=1.1.5" />
+  <link rel="stylesheet" href="styles.css?v=nov16-ui5" />
+  <link rel="stylesheet" href="design.css?v=nov16-ui5" />
+  <link rel="stylesheet" href="cookie-tower/tower-app.css?v=nov16-ui5" />
+  <link rel="stylesheet" href="followup.css?v=nov16-ui5" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="#home" aria-label="차곡 홈"><img class="brand-logo" src="public/assets/chagok-logo.png" alt="chagok" /></a>
+      <a class="brand" href="#home" aria-label="차곡 홈"><img class="brand-logo" src="public/assets/chagok-logo.png?v=nov16-ui5" alt="chagok" /></a>
       <div class="topbar-actions"><button class="account-button" id="account-shortcut" aria-label="Google 간편 로그인">로그인</button><button class="icon-button notification-bell" id="settings-shortcut" aria-label="알림과 설정 열기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button></div>
     </header>
 
     <main id="app" aria-live="polite"></main>
 
     <nav class="bottom-nav" aria-label="주요 메뉴">
-      <button data-page="home" class="nav-item active"><span>⌂</span><small>홈</small></button>
-      <button data-page="schedule" class="nav-item"><span>▦</span><small>시간표</small></button>
-      <button data-page="stats" class="nav-item"><span>▥</span><small>기록</small></button>
-      <button data-page="settings" class="nav-item"><span>♙</span><small>MY</small></button>
+      <button data-page="home" class="nav-item active"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg><small>홈</small></button>
+      <button data-page="schedule" class="nav-item"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18M7 14h2m3 0h2m3 0h1M7 17h2m3 0h2"/></svg><small>시간표</small></button>
+      <button data-page="stats" class="nav-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11h4v9Zm6 0V5h4v15Zm6 0V2h4v18Z"/></svg><small>기록</small></button>
+      <button data-page="settings" class="nav-item"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21a8 8 0 0 1 16 0Z"/></svg><small>MY</small></button>
     </nav>
   </div>
   <div id="toast" class="toast" role="status"></div>
   <div id="modal-root"></div>
-  <script src="auth-config.js?v=0.3.28"></script>
+  <script src="auth-config.js?v=nov16-ui5"></script>
   <script defer src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth-compat.js"></script>
-  <script defer src="auth.js?v=0.3.28"></script>
-  <script defer src="app.js?v=0.4.2"></script>
-  <script defer src="design.js?v=1.1.4"></script>
-  <script defer src="hardware.js?v=0.1.0"></script>
+  <script defer src="auth.js?v=nov16-ui5"></script>
+  <script defer src="cookie-tower/tower-core.js?v=nov16-ui5"></script>
+  <script defer src="cookie-tower/tower-integration.js?v=nov16-ui5"></script>
+  <script defer src="cookie-tower/tower-art.js?v=nov16-ui5"></script>
+  <script defer src="app.js?v=nov16-ui5"></script>
+  <script defer src="design.js?v=nov16-ui5"></script>
+  <script defer src="cookie-tower/tower-app.js?v=nov16-ui5"></script>
+  <script defer src="hardware.js?v=nov16-ui5"></script>
+  <script defer src="followup.js?v=nov16-ui5"></script>
 </body>
 </html>
 

@@ -119,3 +119,182 @@
 .complete-display{position:relative;display:flex;align-items:center;justify-content:center;padding:0 20% 0 6%}
 .complete-display>strong{font:inherit;color:inherit;line-height:1;font-variant-numeric:tabular-nums}
 .complete-check{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:clamp(32px,9vw,48px);height:clamp(32px,9vw,48px);display:grid;place-items:center;border-radius:50%;background:#624a3b;color:#fff8ed;font:700 clamp(18px,5vw,26px)/1 var(--font)}
+
+/* Match the tower illustration to the layered mountain and cookie reference. */
+.tower-sky{background:linear-gradient(180deg,#fffdf8 0%,#eef8ff 30%,#dceefa 72%,#eee5d7 100%)}
+.tower-mountains{position:absolute;z-index:0;top:39%;right:-5%;bottom:0;left:-5%;width:110%;height:61%;overflow:visible;background:none}
+
+/* Game screen tuned to the supplied Chagok mockup. */
+#app:has(.game-card)>.eyebrow{margin-top:12px;color:#8b7568;font-size:15px}
+#app:has(.game-card)>.page-title{margin:8px 0 4px;color:#38251b;font:700 28px/1.25 var(--display)}
+#app:has(.game-card)>.page-subtitle{margin:0;color:#9a877b;font-size:15px}
+.game-card{margin-top:22px;padding:20px;border:1.5px solid #eee1d1;border-radius:30px;background:#f8f3eb;box-shadow:0 8px 20px #50351a0a;color:#38251b}
+.game-card-heading{padding:8px 12px;border-radius:24px;background:#e9dfd2;font:14px var(--font)}
+.game-round-badge{min-width:42px;text-align:center;padding:8px 13px;background:#ed9b40;font:14px var(--display)}
+.game-target{gap:8px;margin:20px 0 20px}
+.game-target-label{font:14px/1.2 var(--font);letter-spacing:.25px;color:#806d5e}
+.game-instruction{min-width:0;width:max-content;max-width:100%;padding:9px 18px;border:1.5px solid #ead9c5;border-radius:23px;background:#fffdfa;box-shadow:0 2px 3px #593a1c0d;color:#38251b;font:22px/1.35 var(--font);white-space:nowrap}
+.game-instruction:empty{visibility:hidden;min-height:48px;padding-top:0;padding-bottom:0;border-color:transparent;background:transparent;box-shadow:none}
+.game-feedback{margin:0;text-align:center;color:#c8774e;font-size:12px}
+.game-timer-row{margin:0 2px 8px;color:#806d5e;font:14px var(--font)}
+.game-timer-row strong{color:#df5c23;font:700 18px var(--display);font-variant-numeric:tabular-nums}
+.game-time-track{height:10px;margin:0 0 23px;border-radius:9px;background:#e7dbce}
+.game-time-track span{border-radius:inherit;background:linear-gradient(90deg,#55e4b5 0%,#f3d56c 52%,#f38b70 100%);transition:width .05s linear}
+.game-board{padding:0}
+.gem-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.gem{border-radius:25px;box-shadow:0 3px 6px #4d32141c;transition:transform .14s ease,filter .14s ease}
+.gem:active{transform:scale(.96)}
+.game-cookie-icon{display:block;width:54%;height:54%;overflow:visible;filter:drop-shadow(0 1px 0 #e9d9bd)}
+.game-cookie-icon path{fill:#fff8e8}
+.gem.brown{background:#f48f86}.gem.pink{background:#f3a3b8}.gem.blue{background:#9ec9f2}.gem.green{background:#9fd3a7}.gem.orange{background:#ffb17e}.gem.yellow{background:#ffd36e}
+.game-choices{margin-top:12px;justify-items:center}
+.game-choices .button{min-width:150px;text-align:center}
+.game-card.is-playing .game-choices{display:none}
+.game-choices #game-result{color:#87583d;font:14px var(--display)}
+@media(max-width:380px){.game-card{padding:17px}.gem-row{gap:11px}.gem{border-radius:21px}.game-instruction{font-size:19px}.game-target{margin:18px 0}.game-time-track{margin-bottom:18px}}
+.tower-mountains .mountain-back{fill:#d8dcdd}
+.tower-mountains .mountain-back-snow{fill:#f8faf9}
+.tower-mountains .mountain-front{fill:#cfd4d6}
+.tower-mountains .mountain-front-snow{fill:#f4f6f4}
+.tower-mountains .mountain-foothills{fill:#e9dfcf}
+.tower-mountains::before,.tower-mountains::after{content:none!important}
+.tower-stack{bottom:22px;height:92%;width:min(350px,88%)}
+.tower-pile{inset:0 0 32px;width:100%;height:auto;transform:none}
+.tower-cookie{left:50%;bottom:var(--layer-bottom);margin:0;width:var(--layer-width);height:66px;border-radius:50%;background:linear-gradient(180deg,var(--cookie-top) 0 72%,var(--cookie-side) 73% 100%);box-shadow:inset 0 -3px #68412218,0 3px 4px #51341d20;filter:none;overflow:visible;transform:translateX(calc(-50% + var(--layer-offset)));animation:tower-rise .45s both;animation-delay:var(--layer-delay)}
+.tower-cookie:nth-child(2n){width:var(--layer-width);margin:0}
+.tower-cookie::after{content:"";position:absolute;inset:0;border-radius:50%;background:linear-gradient(45deg,transparent 16%,var(--cookie-chip) 17% 84%,transparent 85%) 25% 39%/17px 17px no-repeat,linear-gradient(45deg,transparent 16%,var(--cookie-chip) 17% 84%,transparent 85%) 43% 66%/13px 13px no-repeat,linear-gradient(45deg,transparent 16%,var(--cookie-chip) 17% 84%,transparent 85%) 61% 28%/11px 11px no-repeat,linear-gradient(45deg,transparent 16%,var(--cookie-chip) 17% 84%,transparent 85%) 77% 56%/18px 18px no-repeat}
+.tower-cookie.flavor-0{--cookie-top:#f8bd73;--cookie-side:#d8954f;--cookie-chip:#4b2b1e}
+.tower-cookie.flavor-1{--cookie-top:#a7b45b;--cookie-side:#75843a;--cookie-chip:#778537}
+.tower-cookie.flavor-2{--cookie-top:#a96629;--cookie-side:#75451f;--cookie-chip:#f2d39c}
+.tower-cookie.flavor-3{--cookie-top:#f2d69b;--cookie-side:#d8b779;--cookie-chip:#bd5747}
+.tower-cookie.flavor-4{--cookie-top:#f4ad61;--cookie-side:#d38a43;--cookie-chip:#f6dda2}
+.tower-pile .tower-cookie.flavor-0,.tower-pile .tower-cookie.flavor-1,.tower-pile .tower-cookie.flavor-2,.tower-pile .tower-cookie.flavor-3,.tower-pile .tower-cookie.flavor-4{background:linear-gradient(180deg,var(--cookie-top) 0 72%,var(--cookie-side) 73% 100%);filter:none}
+.tower-base{width:min(300px,88%);height:36px;background:linear-gradient(180deg,#78574c 0 70%,#50352c 71%);clip-path:polygon(13% 0,87% 0,100% 100%,0 100%)}
+.tower-status{display:flex;align-items:center;gap:9px}
+.tower-status i{width:9px;height:9px;border-radius:50%;background:#f5a000}
+.tower-share{display:flex;align-items:center;justify-content:center;gap:14px}
+.tower-share svg{width:22px;height:22px;fill:none;stroke:#f8dfce;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.calendar-day.qualified{background:#f2bd76;color:#4c2c18;font-weight:700;box-shadow:inset 0 -3px #df9c4f}
+.calendar-day.qualified.today{outline-color:#e98449}
+.permission-list article i svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.permission-privacy{display:flex;align-items:center;gap:12px}
+.permission-privacy svg{width:24px;height:24px;flex:none;fill:none;stroke:#805c4d;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav .nav-item svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.space-tower .mountain-back,.space-tower .mountain-front{fill:#253658}.space-tower .mountain-back-snow,.space-tower .mountain-front-snow{fill:#b3c2d8}.space-tower .mountain-foothills{fill:#183a62}
+
+/* Responsive screen frame and oven rebuilt from HTML so timer digits appear only once. */
+body{background:#fbf9f6}
+.app-shell{width:min(390px,100%);max-width:390px;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;align-items:stretch;padding-top:8px;background:#fbf9f6}
+.app-shell>header,.app-shell>#app{width:100%}
+.app-shell>.bottom-nav{width:min(390px,100%)}
+.oven-machine{position:relative;width:min(100%,420px);aspect-ratio:1/1;margin:52px auto 18px;padding:0;overflow:visible;border:0;border-radius:16%;background:#e9e1d5;box-shadow:0 16px 34px #26170e45}
+.oven-machine-art{display:none!important}
+.oven-top-lines{position:absolute;top:8%;left:38%;right:38%;height:3px;display:flex;gap:8px}
+.oven-top-lines i{height:100%;flex:1;border-radius:8px;background:#d8d0c6}
+.oven-display,.oven-machine .complete-display{position:absolute;z-index:2;left:11%;top:14%;width:78%;height:18%;padding:0 17% 0 4%;display:flex;align-items:center;justify-content:center;border:4px solid #c9bdad;border-radius:28px;background:#3c291f;color:#fff6ec;font:700 clamp(34px,9vw,54px)/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:2px;font-variant-numeric:tabular-nums;box-shadow:inset 0 2px 2px #ffffff18}
+.oven-display .focus-timer,.complete-display>strong{font:inherit;line-height:1;color:inherit;font-variant-numeric:tabular-nums;white-space:nowrap}
+.oven-machine .oven-pause{position:absolute;right:4%;top:50%;transform:translateY(-50%);width:clamp(34px,10vw,52px);height:clamp(34px,10vw,52px);display:grid;place-items:center;background:#604b3c;color:white;font-size:18px}
+.oven-window,.complete-window{position:absolute;left:8%;top:41%;width:84%;height:43%;overflow:hidden;border:12px solid #c9beaf;border-radius:34px;background:radial-gradient(ellipse at 50% 58%,#ff783d 0,#e84d22 54%,#812d1c 100%);box-shadow:inset 0 0 24px #55261c88}
+.oven-heat{position:absolute;z-index:1;left:10%;right:10%;height:5px;border-radius:8px;background:#ff6c32;box-shadow:0 0 8px #ff6c32}
+.oven-heat-top,.complete-heat-top{top:12%}.oven-heat-bottom{bottom:12%}
+.oven-tray,.complete-tray{position:absolute;z-index:2;left:8%;right:8%;bottom:23%;height:36%;border-radius:10px 10px 15px 15px;background:#49342d;clip-path:polygon(10% 0,90% 0,100% 100%,0 100%);box-shadow:0 8px 9px #28171155}
+.oven-window>img{position:absolute;z-index:3;left:50%;top:39%;width:42%;height:48%;object-fit:contain;transform:translateX(-50%);filter:drop-shadow(0 5px 2px #482b1b55)}
+.oven-foot{position:absolute;bottom:6%;left:20%;right:20%;height:4%;border-radius:20px;background:#b9afa2;box-shadow:0 3px 2px #74675944}
+.complete-oven.oven-machine{width:min(100%,360px);margin:24px auto 26px;flex:none;background:#e9e1d5;box-shadow:0 18px 32px #7a471e35}
+.bake-complete{width:100%;min-height:100dvh;margin:0;padding:24px 24px 34px;background:linear-gradient(180deg,#ffe9bd 0%,#ffd38f 55%,#f4bd70 100%);display:flex;flex-direction:column;align-items:center;overflow:hidden;color:#432719}
+.bake-complete .complete-eyebrow{align-self:flex-start;margin:0 0 42px;color:#ead8c2;font-size:14px}
+.bake-complete h1{width:100%;margin:0;text-align:center;font:700 38px/1.2 var(--display);color:#432719}
+.complete-oven.oven-machine{overflow:visible}
+.complete-display{padding-right:17%;padding-left:4%;display:flex;align-items:center;justify-content:center}
+.complete-check{position:absolute;right:4%;top:50%;width:clamp(34px,10vw,52px);height:clamp(34px,10vw,52px);display:grid;place-items:center;transform:translateY(-50%);border-radius:50%;background:#604b3c;color:#fff7ef;font:700 24px/1 var(--font)}
+.complete-window{z-index:1}
+.complete-window::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,#ff9d39aa,transparent 58%);pointer-events:none}
+.complete-cookie-slide{position:absolute;z-index:4;left:50%;bottom:13%;width:47%;height:31%;object-fit:contain;opacity:0;filter:drop-shadow(0 12px 8px #4b291e55);animation:cookie-slide-out 1.05s .16s cubic-bezier(.2,.75,.25,1) both}
+@keyframes cookie-slide-out{0%{opacity:0;transform:translate(-50%,0) scale(.78)}35%{opacity:1}100%{opacity:1;transform:translate(-50%,92%) scale(1.1)}}
+
+.bake-complete .complete-summary{width:100%;max-width:360px;margin:auto 0 20px;padding-top:8px;text-align:center;color:#543724;font-size:14px}
+.complete-actions{width:100%;max-width:360px;display:grid;gap:12px}
+.bake-complete .complete-actions>.button{width:100%;max-width:none;min-height:62px;margin:0;border:0;border-radius:40px;background:#fffaf5;color:#3b251a;font:700 18px var(--display);box-shadow:0 8px 16px #75491f20}
+.bake-complete .complete-actions>.button.secondary{background:#382219;color:#fff8ef}
+body:has(.bake-complete){background:#fbf9f6}
+.app-shell:has(.bake-complete){width:min(390px,100%);min-height:100dvh;background:transparent}
+.app-shell:has(.bake-complete) main{width:100%;padding:0}
+.app-shell:has(.bake-complete)>.topbar,.app-shell:has(.bake-complete)>.bottom-nav{display:none}
+.tower-cookie{left:calc(50% + var(--layer-left));bottom:var(--layer-bottom);margin:0;width:var(--layer-width);height:66px;border-radius:50%;background:linear-gradient(180deg,var(--cookie-top) 0 72%,var(--cookie-side) 73% 100%);box-shadow:inset 0 -3px #68412218,0 3px 4px #51341d20;filter:none;overflow:visible;transform:none;translate:0 0;animation:tower-cookie-rise .45s both;animation-delay:var(--layer-delay)}
+@keyframes tower-cookie-rise{from{opacity:0;translate:0 -34px}to{opacity:1;translate:0 0}}
+@media(max-height:720px){.bake-complete{padding-top:18px}.bake-complete .complete-eyebrow{margin-bottom:18px}.complete-oven.oven-machine{width:min(78vw,300px);margin:14px auto}.bake-complete .complete-summary{margin-top:auto}}
+
+/* Cookie Tower: match the supplied mountain scene and baked-cookie stack. */
+.month-day-dots{position:absolute;left:0;right:0;bottom:4px;display:flex;justify-content:center;gap:3px;pointer-events:none}
+.month-day-dots i{position:static;flex:0 0 4px;width:4px;height:4px;margin:0;border-radius:50%;background:#805321}
+.tower-sky{background:linear-gradient(180deg,#fffdf8 0%,#edf8ff 28%,#dceefa 68%,#e9dfcf 100%)}
+.tower-sky::before,.tower-sky::after{content:"";position:absolute;z-index:1;pointer-events:none;background:#fff;opacity:.92}
+.tower-sky::before{width:112px;height:34px;left:8%;top:54%;border-radius:50%;box-shadow:23px -9px 0 -3px #fff,48px 1px 0 -6px #fff}
+.tower-sky::after{width:102px;height:30px;right:7%;top:37%;border-radius:50%;box-shadow:20px -8px 0 -3px #fff,43px 0 0 -5px #fff}
+.tower-status,.tower-height{z-index:3}
+.tower-ruler{position:absolute;z-index:2;left:8px;top:55%;bottom:23%;display:flex;flex-direction:column;justify-content:space-between;color:#907f70;font-size:10px;pointer-events:none}
+.tower-ruler i{position:relative;min-width:36px;padding-left:12px;font-style:normal}
+.tower-ruler i::before{content:"";position:absolute;left:0;top:50%;width:8px;height:1px;background:#a99a8c}
+.tower-stack{bottom:24px;height:76%;width:min(350px,94%)}
+.tower-pile{inset:0 0 34px}
+.tower-cookie,.tower-pile .tower-cookie{left:calc(50% + var(--layer-left));bottom:var(--layer-bottom);margin:0;width:var(--layer-width);height:140px;border-radius:0;background:transparent url("public/assets/tower-cookie-reference.png") center/100% 100% no-repeat;box-shadow:none;filter:none;overflow:visible;transform:none;translate:0 0;animation:tower-cookie-rise .48s both;animation-delay:var(--layer-delay)}
+.tower-pile .tower-cookie.flavor-0{filter:none}
+.tower-pile .tower-cookie.flavor-1{filter:hue-rotate(58deg) saturate(.7) brightness(.92)}
+.tower-pile .tower-cookie.flavor-2{filter:brightness(.75) sepia(.25)}
+.tower-pile .tower-cookie.flavor-3{filter:hue-rotate(-16deg) saturate(.75) brightness(1.08)}
+.tower-pile .tower-cookie.flavor-4{filter:hue-rotate(-8deg) saturate(1.15) brightness(1.03)}
+.tower-base{z-index:4;width:min(300px,88%);height:36px;background:linear-gradient(180deg,#78574c 0 70%,#50352c 71%)}
+.tower-share{position:relative;z-index:2}
+.space-tower .tower-sky::before,.space-tower .tower-sky::after{display:none}
+.chart-track span{min-height:0!important}
+.oven-window>img{top:43%;filter:drop-shadow(0 0 11px #ff4d18e0) drop-shadow(0 5px 4px #482b1b88)}
+.bake-label{letter-spacing:0}
+.tower-ruler{display:flex}
+.space-tower .tower-ruler{display:none}
+
+/* Restore rounded, overlapping cookie discs (the raster cookie is only for the oven). */
+.tower-cookie,.tower-pile .tower-cookie{
+  left:calc(50% + var(--layer-left));bottom:var(--layer-bottom);margin:0;
+  width:var(--layer-width);height:92px;border:0;border-radius:50% / 43%;
+  background:linear-gradient(180deg,transparent 0 65%,var(--cookie-side) 66% 100%) !important;
+  box-shadow:0 5px 6px #51341d24;filter:none !important;overflow:visible;
+  transform:rotate(var(--layer-rotation,0deg));translate:0 0;
+  animation:tower-cookie-rise .48s both;animation-delay:var(--layer-delay)
+}
+.tower-cookie::before{
+  content:"";position:absolute;z-index:1;left:0;top:0;width:100%;height:72%;
+  border-radius:50%;background:var(--cookie-top);box-shadow:inset 0 -3px #68412218;
+}
+.tower-cookie::after{
+  content:"";position:absolute;z-index:2;inset:0 0 28%;border-radius:50%;pointer-events:none;
+  background:
+    linear-gradient(45deg,transparent 16%,var(--cookie-chip) 17% 84%,transparent 85%) 23% 40%/20px 19px no-repeat,
+    linear-gradient(45deg,transparent 16%,var(--cookie-chip) 17% 84%,transparent 85%) 44% 62%/14px 14px no-repeat,
+    linear-gradient(45deg,transparent 16%,var(--cookie-chip) 17% 84%,transparent 85%) 64% 30%/22px 21px no-repeat,
+    linear-gradient(45deg,transparent 16%,var(--cookie-chip) 17% 84%,transparent 85%) 79% 56%/18px 17px no-repeat;
+}
+.chagok-home .oven-bake{right:6%;bottom:12%;width:clamp(92px,25%,112px);min-height:0;padding:8px 7px;box-sizing:border-box;border-radius:22px;font-size:13px;white-space:nowrap}
+.chagok-quick .quick-icon svg{stroke-width:2.6}
+
+
+/* Use the pale cookie palette for primary schedule and task actions. */
+.task-add-button,.modal #class-form .modal-actions > button[type=submit],.modal #task-form > button[type=submit]{background:#f3dfc2;color:#3b2418;box-shadow:0 5px 12px #8a5b3024}
+.task-add-button:hover,.modal #class-form .modal-actions > button[type=submit]:hover,.modal #task-form > button[type=submit]:hover{background:#edcfaa}
+.task-add-button:focus-visible,.modal #class-form .modal-actions > button[type=submit]:focus-visible,.modal #task-form > button[type=submit]:focus-visible{outline:3px solid #8a5b30;outline-offset:2px}
+
+/* Cookie visuals: keep the mascot on the back half of the tray and make the oven glow read as reflected light. */
+.oven-window>img{top:29%;width:42%;height:44%;filter:drop-shadow(0 0 13px #ff4d18e8) drop-shadow(0 0 6px #ff8a38aa) drop-shadow(0 4px 4px #482b1b88)}
+.game-cookie-icon{width:60%;height:60%;filter:drop-shadow(0 2px 0 #e9d9bd)}
+.complete-speed-line{position:absolute;z-index:3;bottom:28%;width:5px;height:31%;border-radius:999px;background:#fff8e8;box-shadow:0 0 5px #fff8e8aa;opacity:0;transform-origin:center top;animation:cookie-speed-streak .52s cubic-bezier(.16,.8,.3,1) both}
+.speed-line-one{left:32%;animation-delay:.16s}.speed-line-two{left:49%;height:38%;animation-delay:.11s}.speed-line-three{left:66%;animation-delay:.2s}
+@keyframes cookie-speed-streak{0%{opacity:0;transform:translateY(-12px) scaleY(.25)}16%{opacity:1}100%{opacity:0;transform:translateY(58px) scaleY(1.2)}}
+
+/* Make the two utility icons called out in the home screen visibly bolder. */
+.chagok-quick button[data-go="stats"] .quick-icon svg,
+.chagok-quick button[data-go="focus"] .quick-icon svg{stroke-width:3.4}
+
+
+/* Match the supplied flat bitten-cookie game icons and keep the history shortcut light. */
+.gem::before,.gem::after{display:none!important}
+.game-cookie-icon{filter:none}
+.chagok-quick button[data-go="stats"] .quick-icon svg{stroke-width:1.8}
