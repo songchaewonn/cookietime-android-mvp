@@ -6,7 +6,7 @@ on:
       release_tag:
         description: Release version tag
         required: true
-        default: v0.3.1
+        default: v0.3.2
   push:
     tags:
       - "v*"
@@ -35,10 +35,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
-          packages: |-
-            platform-tools
-            platforms;android-35
-            build-tools;35.0.0
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
 
       - name: Build installable debug APK
         run: gradle --no-daemon assembleDebug

@@ -1,10 +1,10 @@
 # CookieTime Android MVP
 
-## v0.3.1 (2026-11-18)
+## v0.3.2 (2026-11-18)
 
-웹 저장소 `90d1cd7`의 최신 화면을 반영했습니다. 시간표·MY 변경, 월별 쿠키 타워와 집중 기록 연결, 후속 화면 스크립트 및 스타일을 APK에 포함합니다. `versionCode`는 6입니다.
+웹 저장소 `90d1cd7`의 최신 화면을 반영했습니다. 시간표·MY 변경, 월별 쿠키 타워와 집중 기록 연결, 후속 화면 스크립트 및 스타일을 APK에 포함합니다. `versionCode`는 7입니다. v0.3.1 배포 작업의 SDK 패키지 설정 오류를 수정했습니다.
 
-설치 APK는 GitHub Releases의 `v0.3.1`에서 다운로드합니다. 직접 설치용 debug 서명 빌드이며 실제 Android 기기의 권한·Bluetooth 동작은 기기에서 확인해야 합니다.
+설치 APK는 GitHub Releases의 `v0.3.2`에서 다운로드합니다. 직접 설치용 debug 서명 빌드이며 실제 Android 기기의 권한·Bluetooth 동작은 기기에서 확인해야 합니다.
 
 검증: `node --test web/cookie-tower/*.test.cjs`로 타워 및 실제 타이머 연결을 확인합니다.
 
