@@ -58,7 +58,16 @@
     if (!connected) return;
     if (!state.focus.active) sendToHardware('READY');
     else if (state.focus.deviation) sendToHardware('PAUSE');
-    else sendToHardware(`SYNC:${Math.max(0, Math.floor(state.focus.sessionSeconds || 0))}`);
+    else sendToHardware(focusTimerCommand());
+  }
+
+  function focusTimerCommand() {
+    const elapsed = Math.max(0, Math.floor(state.focus.sessionSeconds || 0));
+    if ((state.settings.focusMode || 'timer') === 'timer') {
+      const configured = Math.max(1, Number(state.settings.focusTimerMinutes) || 25) * 60;
+      return `TIMER:${Math.max(0, configured - elapsed)}`;
+    }
+    return `COUNTUP:${elapsed}`;
   }
 
   async function connectDesktopSerial() {
@@ -161,6 +170,10 @@
       focusAction('deviation');
     } else if (message === 'READY' || message === 'OK') {
       // The LCD sketch may send a simple acknowledgement; app state remains authoritative.
+    } else if (message === 'TIMER_DONE' && state.focus.active) {
+      if (page !== 'focus') go('focus');
+      focusAction('stop-focus');
+      showToast('설정한 집중 시간이 끝났어요.');
     } else {
       console.info('Hardware message:', message);
     }
@@ -184,8 +197,8 @@
   const originalFocusAction = focusAction;
   focusAction = function (action) {
     originalFocusAction(action);
-    if (action === 'start-focus') sendToHardware(`SYNC:${Math.max(0, Math.floor(state.focus.sessionSeconds || 0))}`);
-    else if (action === 'deviation') sendToHardware(state.focus.deviation ? 'PAUSE' : `SYNC:${Math.max(0, Math.floor(state.focus.sessionSeconds || 0))}`);
+    if (action === 'start-focus') sendToHardware(focusTimerCommand());
+    else if (action === 'deviation') sendToHardware(state.focus.deviation ? 'PAUSE' : focusTimerCommand());
     else if (action === 'stop-focus') sendToHardware('STOP');
   };
 
@@ -195,7 +208,7 @@
 
   setInterval(() => {
     if (connected && state.focus.active && !state.focus.deviation) {
-      sendToHardware(`SYNC:${Math.max(0, Math.floor(state.focus.sessionSeconds || 0))}`);
+      sendToHardware(focusTimerCommand());
     }
   }, 1000);
 })();

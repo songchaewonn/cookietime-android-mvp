@@ -23,7 +23,9 @@ LiquidCrystal_I2C lcd(LCD_ADDRESS, 16, 2);
 
 enum TimerMode : uint8_t { MODE_READY, MODE_FOCUS, MODE_PAUSED };
 TimerMode mode = MODE_READY;
-unsigned long focusSeconds = 0;
+unsigned long displaySeconds = 0;
+unsigned long lastTimerTick = 0;
+bool countdownMode = true;
 unsigned long pressedAt = 0;
 bool buttonWasDown = false;
 bool longPressSent = false;
@@ -40,20 +42,20 @@ void printPadded(uint8_t row, const char *text) {
 
 void drawTimer() {
   char line[17];
-  unsigned long hours = focusSeconds / 3600;
-  unsigned long minutes = (focusSeconds / 60) % 60;
-  unsigned long seconds = focusSeconds % 60;
+  unsigned long hours = displaySeconds / 3600;
+  unsigned long minutes = (displaySeconds / 60) % 60;
+  unsigned long seconds = displaySeconds % 60;
   if (hours > 0) snprintf(line, sizeof(line), "%02lu:%02lu:%02lu", hours % 100, minutes, seconds);
   else snprintf(line, sizeof(line), "%02lu:%02lu", minutes, seconds);
 
   if (mode == MODE_READY) {
     printPadded(0, "COOKIE TIME");
-    printPadded(1, "READY - APP BTN");
+    printPadded(1, "PRESS TO START");
   } else if (mode == MODE_PAUSED) {
-    printPadded(0, "FOCUS PAUSED");
+    printPadded(0, countdownMode ? "TIME LEFT PAUSED" : "FOCUS PAUSED");
     printPadded(1, line);
   } else {
-    printPadded(0, "FOCUSING");
+    printPadded(0, countdownMode ? "TIME REMAINING" : "FOCUSING");
     printPadded(1, line);
   }
 }
@@ -72,17 +74,30 @@ void handleCommand(char *command) {
 
   if (strcmp(command, "READY") == 0) {
     mode = MODE_READY;
-    focusSeconds = 0;
+    displaySeconds = 0;
   } else if (strcmp(command, "PAUSE") == 0) {
     mode = MODE_PAUSED;
   } else if (strcmp(command, "STOP") == 0) {
     mode = MODE_READY;
-    focusSeconds = 0;
+    displaySeconds = 0;
+  } else if (strncmp(command, "TIMER:", 6) == 0 || strncmp(command, "COUNTUP:", 8) == 0) {
+    bool isCountdown = strncmp(command, "TIMER:", 6) == 0;
+    const char *value = command + (isCountdown ? 6 : 8);
+    char *end = nullptr;
+    unsigned long incoming = strtoul(value, &end, 10);
+    if (end != value) {
+      countdownMode = isCountdown;
+      displaySeconds = incoming;
+      lastTimerTick = millis();
+      mode = MODE_FOCUS;
+    }
   } else if (strncmp(command, "SYNC:", 5) == 0) {
     char *end = nullptr;
     unsigned long incoming = strtoul(command + 5, &end, 10);
     if (end != command + 5) {
-      focusSeconds = incoming;
+      countdownMode = false;
+      displaySeconds = incoming;
+      lastTimerTick = millis();
       mode = MODE_FOCUS;
     }
   } else if (strcmp(command, "PING") == 0) {
@@ -121,7 +136,7 @@ void handleButton() {
     longPressSent = true;
     sendButtonEvent("BTN"); // long press ends an active focus session
     mode = MODE_READY;
-    focusSeconds = 0;
+    displaySeconds = 0;
     drawTimer();
   }
   if (!down && buttonWasDown) {
@@ -134,6 +149,28 @@ void handleButton() {
       mode = mode == MODE_FOCUS ? MODE_PAUSED : MODE_FOCUS;
       drawTimer();
     }
+  }
+}
+
+void tickTimer() {
+  if (mode != MODE_FOCUS) return;
+  unsigned long now = millis();
+  while (now - lastTimerTick >= 1000) {
+    lastTimerTick += 1000;
+    if (countdownMode) {
+      if (displaySeconds > 0) displaySeconds--;
+      if (displaySeconds == 0) {
+        mode = MODE_READY;
+        bluetooth.println("TIMER_DONE");
+        Serial.println("TIMER_DONE");
+        tone(BUZZER_PIN, 1400, 350);
+        drawTimer();
+        return;
+      }
+    } else {
+      displaySeconds++;
+    }
+    drawTimer();
   }
 }
 
@@ -151,4 +188,5 @@ void loop() {
   readLines(Serial, usbLine, usbLength);
   readLines(bluetooth, bluetoothLine, bluetoothLength);
   handleButton();
+  tickTimer();
 }
