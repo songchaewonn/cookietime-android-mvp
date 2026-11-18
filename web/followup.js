@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.0.0';
+  const APP_VERSION = '1.0.1';
   let editingSettings = false;
   let settingsCategory = 'all';
   state.notifications = Array.isArray(state.notifications) ? state.notifications : [];

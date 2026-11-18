@@ -171,7 +171,7 @@ function classEndPoll(){}
 function openClassEndPrompt(cls){const root=document.querySelector('#modal-root');root.innerHTML=`<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true"><div class="modal-top"><h2>수업이 끝났어요</h2><button class="close" data-close>×</button></div><p class="page-subtitle">${esc(cls.title)}에서 할 일이 생겼나요? 제목과 마감만 빠르게 기록할 수 있어요.</p><form id="class-end-task"><label class="field-label">할 일 제목<input class="input" name="title" required maxlength="50" placeholder="예: 강의 노트 정리"/></label><label class="field-label">마감일시<input class="input" name="due" type="datetime-local" required value="${localDate(new Date(Date.now()+86400000))}"/></label><div class="modal-actions"><button type="button" class="button ghost" data-skip>나중에</button><button class="button" type="submit">빠르게 추가</button></div></form></section></div>`;root.querySelectorAll('[data-close],[data-skip]').forEach(b=>b.onclick=()=>root.innerHTML='');root.querySelector('#class-end-task').onsubmit=e=>{e.preventDefault();const data=new FormData(e.currentTarget),title=String(data.get('title')).trim();state.tasks.push({id:crypto.randomUUID(),title,due:data.get('due'),start:localDate(new Date()),hours:1,priority:'보통',memo:'수업 종료 알림에서 빠르게 추가',done:false,snoozes:0});save();root.innerHTML='';showToast('할 일을 추가했어요')}}
 setInterval(classEndPoll,15000);
 
-window.openMissionFromOverlay=()=>go('game');
+window.openMissionFromOverlay=()=>go('game');window.openFocusFromOverlay=()=>go('focus');
 window.openClassEndFromNotification=title=>openClassEndPrompt({title});
 
 function reconcileLocalDay(){if(document.visibilityState==='visible'&&resetDailyFocusIfNeeded()){save();if(page==='focus'||page==='focusDone')render()}}
