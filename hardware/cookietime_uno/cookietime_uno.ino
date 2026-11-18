@@ -25,7 +25,6 @@ enum TimerMode : uint8_t { MODE_READY, MODE_FOCUS, MODE_PAUSED };
 TimerMode mode = MODE_READY;
 unsigned long displaySeconds = 0;
 unsigned long lastTimerTick = 0;
-bool countdownMode = true;
 unsigned long pressedAt = 0;
 bool buttonWasDown = false;
 bool longPressSent = false;
@@ -52,10 +51,10 @@ void drawTimer() {
     printPadded(0, "COOKIE TIME");
     printPadded(1, "PRESS TO START");
   } else if (mode == MODE_PAUSED) {
-    printPadded(0, countdownMode ? "TIME LEFT PAUSED" : "FOCUS PAUSED");
+    printPadded(0, "TIME LEFT PAUSED");
     printPadded(1, line);
   } else {
-    printPadded(0, countdownMode ? "TIME REMAINING" : "FOCUSING");
+    printPadded(0, "TIME REMAINING");
     printPadded(1, line);
   }
 }
@@ -80,22 +79,11 @@ void handleCommand(char *command) {
   } else if (strcmp(command, "STOP") == 0) {
     mode = MODE_READY;
     displaySeconds = 0;
-  } else if (strncmp(command, "TIMER:", 6) == 0 || strncmp(command, "COUNTUP:", 8) == 0) {
-    bool isCountdown = strncmp(command, "TIMER:", 6) == 0;
-    const char *value = command + (isCountdown ? 6 : 8);
+  } else if (strncmp(command, "TIMER:", 6) == 0) {
+    const char *value = command + 6;
     char *end = nullptr;
     unsigned long incoming = strtoul(value, &end, 10);
     if (end != value) {
-      countdownMode = isCountdown;
-      displaySeconds = incoming;
-      lastTimerTick = millis();
-      mode = MODE_FOCUS;
-    }
-  } else if (strncmp(command, "SYNC:", 5) == 0) {
-    char *end = nullptr;
-    unsigned long incoming = strtoul(command + 5, &end, 10);
-    if (end != command + 5) {
-      countdownMode = false;
       displaySeconds = incoming;
       lastTimerTick = millis();
       mode = MODE_FOCUS;
@@ -157,18 +145,14 @@ void tickTimer() {
   unsigned long now = millis();
   while (now - lastTimerTick >= 1000) {
     lastTimerTick += 1000;
-    if (countdownMode) {
-      if (displaySeconds > 0) displaySeconds--;
-      if (displaySeconds == 0) {
-        mode = MODE_READY;
-        bluetooth.println("TIMER_DONE");
-        Serial.println("TIMER_DONE");
-        tone(BUZZER_PIN, 1400, 350);
-        drawTimer();
-        return;
-      }
-    } else {
-      displaySeconds++;
+    if (displaySeconds > 0) displaySeconds--;
+    if (displaySeconds == 0) {
+      mode = MODE_READY;
+      bluetooth.println("TIMER_DONE");
+      Serial.println("TIMER_DONE");
+      tone(BUZZER_PIN, 1400, 350);
+      drawTimer();
+      return;
     }
     drawTimer();
   }

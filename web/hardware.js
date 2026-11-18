@@ -63,11 +63,8 @@
 
   function focusTimerCommand() {
     const elapsed = Math.max(0, Math.floor(state.focus.sessionSeconds || 0));
-    if ((state.settings.focusMode || 'timer') === 'timer') {
-      const configured = Math.max(1, Number(state.settings.focusTimerMinutes) || 25) * 60;
-      return `TIMER:${Math.max(0, configured - elapsed)}`;
-    }
-    return `COUNTUP:${elapsed}`;
+    const configured = Math.max(1, Number(state.settings.focusTimerMinutes) || 25) * 60;
+    return `TIMER:${Math.max(0, configured - elapsed)}`;
   }
 
   async function connectDesktopSerial() {
