@@ -6,7 +6,7 @@ on:
       release_tag:
         description: Release version tag
         required: true
-        default: v0.3.4
+        default: v1.0.0
   push:
     tags:
       - "v*"
@@ -45,8 +45,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG_NAME: ${{ inputs.release_tag || github.ref_name }}
         run: |
-          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/CookieTime-${TAG_NAME}.apk"
-          gh release create "$TAG_NAME" "$RUNNER_TEMP/CookieTime-${TAG_NAME}.apk" \
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/chagok-${TAG_NAME}.apk"
+          gh release create "$TAG_NAME" "$RUNNER_TEMP/chagok-${TAG_NAME}.apk" \
             --repo "$GITHUB_REPOSITORY" \
-            --title "CookieTime ${TAG_NAME}" \
-            --notes "CookieTime Android MVP install build. This debug-signed APK is for MVP demonstration and direct testing."
+            --title "chagok ${TAG_NAME}" \
+            --notes "chagok Android install build. This debug-signed APK is for direct testing."

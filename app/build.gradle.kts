@@ -17,8 +17,8 @@ android {
         applicationId = "com.cookietime.mvp"
         minSdk = 26
         targetSdk = 35
-        versionCode = 9
-        versionName = "0.3.4"
+        versionCode = 10
+        versionName = "1.0.0"
     }
 
     sourceSets.getByName("main").assets.srcDir(generatedWeb)

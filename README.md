@@ -1,4 +1,8 @@
-# CookieTime Android MVP
+# chagok Android App
+
+## v1.0.0 (2026-11-18)
+
+첫 정식 버전입니다. Android 패키지 `versionCode`는 10이며 앱 버전 표시는 v1.0.0입니다. LCD에는 설정한 집중 시간의 남은 시간이 카운트다운으로 표시됩니다.
 
 ## v0.3.3 (2026-11-18)
 
