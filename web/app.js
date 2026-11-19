@@ -143,7 +143,7 @@ function vibrateStage(stage){if(!state.settings.vibration||stage<1)return;const 
 function promptTaskStart(id){
   const task=state.tasks.find(t=>t.id===id);if(!task||task.done)return;
   const root=document.querySelector('#modal-root');
-  root.innerHTML=`<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="task-start-title"><div class="modal-top"><h2 id="task-start-title">시작할 시간이에요</h2><button class="close" data-close aria-label="닫기">×</button></div><p class="page-subtitle">${esc(task.title)}를 지금 시작해볼까요?</p><div class="modal-actions task-start-actions"><button class="button" data-start-now>집중 시작</button><button class="button secondary" data-snooze>5분만 더</button><button class="button ghost" data-start-game>인지 유연성 게임 시작</button></div></section></div>`;
+  root.innerHTML=`<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="task-start-title"><div class="modal-top"><h2 id="task-start-title">시작할 시간이에요</h2><button class="close" data-close aria-label="닫기">×</button></div><p class="page-subtitle">${esc(task.title)}를 지금 시작해볼까요?</p><div class="modal-actions task-start-actions"><button class="button" data-start-now>집중 시작</button><button class="button secondary" data-snooze>5분만 더</button><button class="button ghost" data-start-game>인지 유연성 게임하기</button></div></section></div>`;
   root.querySelector('[data-close]').onclick=()=>root.innerHTML='';
   root.querySelector('[data-start-now]').onclick=()=>{root.innerHTML='';if(!state.focus.active){const rewarded=awardOnTimeStart(task);focusAction('start-focus');if(rewarded)showToast('정시에 시작했어요. 오늘 기록에 반영했어요.')}else showToast('이미 집중 세션이 진행 중이에요')};
   root.querySelector('[data-snooze]').onclick=()=>snoozeTask(task.id);

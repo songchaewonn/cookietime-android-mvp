@@ -51,7 +51,7 @@ final class NativeNotifications {
             }
             Intent gameOpen=new Intent(context,MainActivity.class).putExtra("start_game",true).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent game=PendingIntent.getActivity(context,(taskId+":game").hashCode(),gameOpen,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
-            builder.addAction(android.R.drawable.ic_media_play,"인지 유연성 게임 시작",game);
+            builder.addAction(android.R.drawable.ic_media_play,"인지 유연성 게임하기",game);
         }
         Notification notification=builder.build();
         manager.notify((title+minutes).hashCode(),notification);
