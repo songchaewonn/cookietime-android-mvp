@@ -6,7 +6,7 @@ on:
       release_tag:
         description: Release version tag
         required: true
-        default: v1.0.1
+      default: v1.0.0
   push:
     tags:
       - "v*"
@@ -46,7 +46,11 @@ jobs:
           TAG_NAME: ${{ inputs.release_tag || github.ref_name }}
         run: |
           cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/chagok-${TAG_NAME}.apk"
-          gh release create "$TAG_NAME" "$RUNNER_TEMP/chagok-${TAG_NAME}.apk" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "chagok ${TAG_NAME}" \
-            --notes "chagok Android install build. This debug-signed APK is for direct testing."
+          if ! gh release view "$TAG_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG_NAME" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "chagok ${TAG_NAME}" \
+              --notes "chagok Android install build. This debug-signed APK is for direct testing."
+          fi
+          gh release upload "$TAG_NAME" "$RUNNER_TEMP/chagok-${TAG_NAME}.apk" \
+            --repo "$GITHUB_REPOSITORY" --clobber
